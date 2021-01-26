@@ -26,7 +26,7 @@ SECRET_KEY = '@934hi)s2#(z+k8kx*#^o(p$8(c&s2z^f)=+lo^-bc*@zed*q*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['scoresnewsscraper.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
