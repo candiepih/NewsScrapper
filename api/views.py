@@ -44,5 +44,5 @@ class newsList(APIView):
     def get(self, request, category):
         data = self.getdata(category)
         s = status.HTTP_200_OK if data is not None else status.HTTP_404_NOT_FOUND
-        r = json.dumps(data) if data is not None else {'status': 404}
+        r = data if data is not None else {'status': 404}
         return Response(r, status=s)
