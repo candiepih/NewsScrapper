@@ -22,7 +22,7 @@ def start():
     }
     scheduler = BackgroundScheduler()
     scheduler.configure(job_defaults=job_defaults)
-    scheduler.add_job(crawl, 'interval', minutes=1)
+    scheduler.add_job(crawl, 'interval', minutes=210)
     d = runner.join()
     if reactor.running:
         d.addBoth(lambda _: reactor.stop())
