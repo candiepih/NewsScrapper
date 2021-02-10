@@ -7,12 +7,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import pymongo
-from rest_framework.renderers import JSONRenderer
+# from rest_framework.renderers import JSONRenderer
 
 
 class newsList(APIView):
 
-    renderer_classes = [JSONRenderer]
+    # renderer_classes = [JSONRenderer]
 
     def getdata(self, collection_name):
         password = "mutheeal.am."
