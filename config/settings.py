@@ -89,7 +89,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'news',
-        'HOST': '127.0.0.1',
+        'HOST': "mongodb+srv://candiepih:mutheeal.am.@cluster0.1fcmf.mongodb.net/news?retryWrites=true&w=majority",
         'PORT': 27017,
     }
 }
