@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from api import views
+from newsScraper import main
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -5,9 +5,9 @@ import hashlib
 
 class BusinessspiderSpider(scrapy.Spider):
     name = 'newsSpider'
-    allowed_domains = ['forbes.com', 'ew.com', 'skysports.com', 'techcrunch.com', 'elle.com', 'newsnow.co.uk']
+    allowed_domains = ['africa.businessinsider.com', 'ew.com', 'skysports.com', 'techcrunch.com', 'elle.com', 'newsnow.co.uk']
     start_urls = [
-        'https://www.forbes.com/business/',
+        'https://africa.businessinsider.com/',
         'https://ew.com/',
         'https://www.skysports.com/',
         'https://techcrunch.com/',
@@ -24,38 +24,26 @@ class BusinessspiderSpider(scrapy.Spider):
 
     # HANDLES BUSINESS NEWS
     def handlingBusinessNews(self, response):
-        latestArticles = response.css("div.channel__columns").css(".card--text")
-        olderArticles = response.css("article.et-promoblock-star-item")
-        latest = []
-        older = []
-        for latestArticle in latestArticles:
-            article = dict()
-            article['title'] = latestArticle.css(".h4--dense::text").get()
-            article['image'] = latestArticle.css("div.preview .preview__image::attr(background-image)").get()
-            article['followUpLink'] = latestArticle.css("a.headlink::attr(href)").get()
-            latest.append(article)
-
-        for article in olderArticles:
-            currentArticle = dict()
-            currentArticle["title"] = article.css(".stream-item__title::text").get()
-            currentArticle["subTitle"] = article.css(".stream-item__description::text").get()
-            currentArticle["followUpLink"] = article.css(".stream-item__title::attr(href)").get()
-            currentArticle["published"] = {
-                "timestamp": article.css(".stream-item__date::attr(data-date)").get(),
-                "duration": article.css(".stream-item__date::text").get()
-            }
-            string = article.css('.ratio16x9::attr(style)').re_first(r'url\((.*)\)')
-            currentArticle["image"] = string.strip('"') if string is not None else string
-            older.append(currentArticle)
-
+        containers = response.css(".col-xs-12")
+        allArticles = []
+        for container in containers:
+            title = container.css(".itemTitle::text").get()
+            subtitle = container.css(".itemLead::text").get()
+            allArticles.append({
+                "title": title.strip() if title is not None else None,
+                "subTitle": subtitle.strip() if subtitle is not None else None,
+                "image": container.css("div.itemImage source img::attr(data-original)").get(),
+                "followUpLink": container.css("a.itemWrapper::attr(href)").get(),
+                "published": {
+                    "timestamp": None,
+                    "date": container.css("span.itemDate::text").get(),
+                },
+            })
         businessNews = {
             "category": "Business",
             "category_id": 1,
-            "publisher": 'Forbes',
-            "articles": {
-                "older": older,
-                "latest": latest
-            }
+            "publisher": 'Businessinsider',
+            "articles": allArticles
         }
 
         return businessNews
@@ -149,17 +137,17 @@ class BusinessspiderSpider(scrapy.Spider):
         return allNews
 
     def handlingFashionNews(self, response):
-        containers = response.css('.full-item ')
+        containers = response.css('.custom-item-inner')
         news = []
         for container in containers:
-            date = container.css("div.js-date::text").get()
+            link = "https://www.elle.com"+container.css(".item-title::attr(href)").get()
             news.append({
-                "title": container.css(".full-item-title::text").get(),
-                "subtitle": container.css(".item-dek p::text").get(),
-                "image": container.css(".full-item-image img::attr(data-src)").get(),
+                "title": container.css(".item-title::text").get(),
+                "followUpLink": link,
+                "image": container.css(".custom-item-image img::attr(data-src)").get(),
                 "published": {
-                    "timestamp": container.css("div.js-date::attr(data-publish-date)").get(),
-                    "date": date.strip() if date is not None else date
+                    "timestamp": None,
+                    "date": None
                 }
             })
         allNews = {
@@ -168,7 +156,6 @@ class BusinessspiderSpider(scrapy.Spider):
             "publisher": 'Elle',
             "articles": news
         }
-
         return allNews
 
     def handlingWorldNews(self, response):
@@ -195,7 +182,7 @@ class BusinessspiderSpider(scrapy.Spider):
 
     def parse(self, response):
 
-        if response.url == 'https://www.forbes.com/business/':
+        if response.url == 'https://africa.businessinsider.com/':
             BusinessspiderSpider.items["businessNews"] = self.handlingBusinessNews(response)
         elif response.url == 'https://ew.com/':
             BusinessspiderSpider.items["entertainmentNews"] = self.handlingEntertainmentNews(response)
@@ -209,6 +196,7 @@ class BusinessspiderSpider(scrapy.Spider):
             BusinessspiderSpider.items["worldNews"] = self.handlingWorldNews(response)
 
         countAllUrls = 0
+
         for url in BusinessspiderSpider.start_urls:
             countAllUrls += 1
 
