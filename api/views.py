@@ -7,23 +7,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import pymongo
-# from .serializers import news_serializer
-import json
-# import subprocess
-
-# handling scrapping subprocess
-# process = subprocess.Popen(['python', 'manage.py', "scrape"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-# poll = process.poll()
-# if poll is None:
-#     print("process is still running>> Spider Running...")
-#     output = process.stdout.readline()
-#     print(output.strip())
-# else:
-#     process = subprocess.Popen(['python', 'manage.py', "scrape"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#     print("process stopped running>> Spider stopped Running...")
+from rest_framework.renderers import JSONRenderer
 
 
 class newsList(APIView):
+
+    renderer_classes = [JSONRenderer]
+
     def getdata(self, collection_name):
         password = "mutheeal.am."
         client = pymongo.MongoClient(
