@@ -39,6 +39,8 @@ class BusinessspiderSpider(scrapy.Spider):
                     "date": container.css("span.itemDate::text").get(),
                 },
             })
+        allArticles.pop(0)
+        allArticles.pop(1)
         businessNews = {
             "category": "Business",
             "category_id": 1,
