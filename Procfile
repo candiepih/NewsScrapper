@@ -1,2 +1,2 @@
 web: gunicorn config.wsgi
-scheduler: python manage.py scrape
+clock: python clock.py
