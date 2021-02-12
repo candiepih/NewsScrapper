@@ -24,5 +24,5 @@ main.start()
 # Cache time to live is 15 minutes for each view.
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/<str:category>', cache_page(60 * 185)(views.newsList.as_view()), name="scrape"),
+    path('api/<str:category>', cache_page(60*60*3)(views.newsList.as_view()), name="scrape"),
 ]
