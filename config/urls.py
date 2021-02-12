@@ -17,10 +17,10 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from api import views
-from newsScraper import main
+# from newsScraper import main
 from django.views.decorators.cache import cache_page
 
-main.start()
+# main.start()
 # Cache time to live is 15 minutes for each view.
 urlpatterns = [
     path('admin/', admin.site.urls),
