@@ -90,10 +90,21 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'news',
         'HOST': "mongodb+srv://candiepih:mutheeal.am.@cluster0.1fcmf.mongodb.net/news?retryWrites=true&w=majority",
-        'PORT': 27017,
+        # 'PORT': 27017,
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://redis-11180.c238.us-central1-2.gce.cloud.redislabs.com:11180',
+        'OPTIONS': {
+            'PASSWORD': 'C6Eqwn893YWnU2VOaZ3OKY8rjZ3U3i1G',
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'example'
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -133,4 +144,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-mimetypes.add_type("text/css", ".css", True)

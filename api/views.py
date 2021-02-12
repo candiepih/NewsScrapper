@@ -18,7 +18,6 @@ class newsList(APIView):
         password = "mutheeal.am."
         client = pymongo.MongoClient(
             "mongodb+srv://candiepih:" + password + "@cluster0.1fcmf.mongodb.net/news?retryWrites=true&w=majority")
-        # client = pymongo.MongoClient("localhost", 27017)
         db = client["news"]
         collection = db[collection_name]
 

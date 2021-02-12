@@ -29,5 +29,3 @@ def start():
     scheduler.start()
 
 
-start()
-
