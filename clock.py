@@ -14,18 +14,19 @@ job_defaults = {
 }
 sched.configure(job_defaults=job_defaults)
 
+
 def crawl():
     runner.crawl(newsSpider.BusinessspiderSpider)
     if not reactor.running:
-        reactor.run()  # the script will block here until all crawling jobs are finished
+        reactor.run(installSignalHandlers=0)  # the script will block here until all crawling jobs are finished
     else:
         d = runner.join()
         d.addBoth(lambda _: reactor.stop())
 
-@sched.scheduled_job('interval', hours=3)
+
+@sched.scheduled_job('interval', minutes=60)
 def timed_job():
     crawl()
-
 
 
 sched.start()

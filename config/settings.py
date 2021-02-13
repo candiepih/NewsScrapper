@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-import mimetypes
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '@934hi)s2#(z+k8kx*#^o(p$8(c&s2z^f)=+lo^-bc*@zed*q*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['scoresnewsscraper.herokuapp.com', '127.0.0.1', 'localhost']
 CORS_ORIGIN_ALLOW_ALL = True
@@ -88,7 +87,7 @@ DATABASES = {
     # },
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'news',
+        'NAME': 'appUtils',
         'HOST': "mongodb+srv://candiepih:mutheeal.am.@cluster0.1fcmf.mongodb.net/news?retryWrites=true&w=majority",
         # 'PORT': 27017,
     }
@@ -144,3 +143,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
