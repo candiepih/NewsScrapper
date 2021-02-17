@@ -5,14 +5,14 @@ import hashlib
 
 class BusinessspiderSpider(scrapy.Spider):
     name = 'newsSpider'
-    allowed_domains = ['africa.businessinsider.com', 'ew.com', 'skysports.com', 'techcrunch.com', 'elle.com', 'newsnow.co.uk']
+    allowed_domains = ['africa.businessinsider.com', 'ew.com', 'skysports.com', 'techcrunch.com', 'elle.com', 'independent.co.uk']
     start_urls = [
         'https://africa.businessinsider.com/',
         'https://ew.com/',
         'https://www.skysports.com/',
         'https://techcrunch.com/',
         'https://www.elle.com/fashion/',
-        'https://www.newsnow.co.uk/h/World+News'
+        'https://www.independent.co.uk/news/world'
     ]
     items: NewsscraperItem = NewsscraperItem()
 
@@ -44,7 +44,7 @@ class BusinessspiderSpider(scrapy.Spider):
         businessNews = {
             "category": "Business",
             "category_id": 1,
-            "publisher": 'Businessinsider',
+            "publisher": 'Business Insider',
             "articles": allArticles
         }
 
@@ -53,7 +53,18 @@ class BusinessspiderSpider(scrapy.Spider):
     # HANDLING ENTERTAINMENT NEWS
     def handlingEntertainmentNews(self, response):
         containers = response.css(".category-page-item")
+        topContainers = response.css(".categoryPageHeader__container-details .entityTout__details")
         allArticles = []
+
+        for topContainer in topContainers:
+            allArticles.append({
+                "title": topContainer.css("a.entityTout__link span::text").get().strip(),
+                "image": topContainer.css(".entityTout__image div.lazy-image::attr(data-src)").get(),
+                "category": None,
+                "followUpLink": topContainer.css("a.entityTout__link::attr(href)").get(),
+                "published": None,
+            })
+
         for container in containers:
             allArticles.append({
                 "title": container.css(".category-page-item-content-wrapper a span::text").get().strip(),
@@ -76,13 +87,12 @@ class BusinessspiderSpider(scrapy.Spider):
     def handlingSportNews(self, response):
         containers = response.css(".sdc-site-tile--has-link")
 
-        allSports = []
-        trendingNews = []
+        articles = []
 
         for container in containers:
             category = container.css("a.sdc-site-tile__tag-link::text").get()
             link = container.css("h3.sdc-site-tile__headline a.sdc-site-tile__headline-link::attr(href)").get()
-            allSports.append({
+            articles.append({
                 "title": container.css(".sdc-site-tile__headline-link span.sdc-site-tile__headline-text::text").get(),
                 "image": container.css(".sdc-site-tile__image-wrap source img::attr(src)").get(),
                 "category": category.strip() if category is not None else None,
@@ -92,7 +102,7 @@ class BusinessspiderSpider(scrapy.Spider):
         containers = response.css(".sdc-site-trending__link")
         for container in containers:
             link = container.css("a.sdc-site-trending__link::attr(href)").get()
-            trendingNews.append({
+            articles.append({
                 "title": container.css("a.sdc-site-trending__link span.sdc-site-trending__link-text::text").get(),
                 "followUpLink": response.url + link[1:] if link[0][:1] == "/" else link
             })
@@ -101,10 +111,7 @@ class BusinessspiderSpider(scrapy.Spider):
             "category": "Sport",
             "category_id": 3,
             "publisher": 'Sky Sports',
-            "articles": {
-                "all": allSports,
-                "trending": trendingNews
-            }
+            "articles": articles
         }
 
         return sportNews
@@ -152,6 +159,7 @@ class BusinessspiderSpider(scrapy.Spider):
                     "date": None
                 }
             })
+        news.pop(0)
         allNews = {
             "category": "Fashion",
             "category_id": 5,
@@ -161,29 +169,32 @@ class BusinessspiderSpider(scrapy.Spider):
         return allNews
 
     def handlingWorldNews(self, response):
-        containers = response.css(".js-maincontent").css(".newsfeed")
-        news = []
+        containers = response.css(".article-default")
+
+        articles = []
+
         for container in containers:
-            news.append({
-                "title": container.css(".hll::text").get(),
-                "followUpLink": container.css(".hll::attr(href)").get(),
-                "source": container.css(".src-part::text").get(),
+            url = "https://www.independent.co.uk" + container.css(".title::attr(href)").get()
+            articles.append({
+                "title": container.css(".title::text").get(),
+                "followUpLink": url,
+                "image": container.css(".image-wrap amp-img::attr(src)").get(),
+                "genre": container.css(".capsule::text").get(),
                 "published": {
-                    "timestamp": container.css("span.time::attr(data-time)").get(),
-                    "time": container.css("span.time::text").get()
+                    "timestamp": None,
+                    "time": None
                 },
             })
         news = {
             "category": "World",
             "category_id": 6,
-            "publisher": 'Newsnow',
-            "articles": news
+            "publisher": 'Independent',
+            "articles": articles
         }
 
         return news
 
     def parse(self, response):
-
         if response.url == 'https://africa.businessinsider.com/':
             BusinessspiderSpider.items["businessNews"] = self.handlingBusinessNews(response)
         elif response.url == 'https://ew.com/':
@@ -194,7 +205,7 @@ class BusinessspiderSpider(scrapy.Spider):
             BusinessspiderSpider.items["techNews"] = self.handlingTechNews(response)
         elif response.url == 'https://www.elle.com/fashion/':
             BusinessspiderSpider.items["fashionNews"] = self.handlingFashionNews(response)
-        elif response.url == 'https://www.newsnow.co.uk/h/World+News':
+        elif response.url == 'https://www.independent.co.uk/news/world':
             BusinessspiderSpider.items["worldNews"] = self.handlingWorldNews(response)
 
         countAllUrls = 0

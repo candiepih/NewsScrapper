@@ -1,7 +1,7 @@
-from django.shortcuts import render
+# from django.shortcuts import render
 # Create your views here.
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+# from django.http import HttpResponse
+# from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,9 +13,9 @@ client = pymongo.MongoClient(
             "mongodb+srv://candiepih:" + password + "@cluster0.1fcmf.mongodb.net/news?retryWrites=true&w=majority")
 
 
-class newsList(APIView):
+class NewsList(APIView):
 
-    # renderer_classes = [JSONRenderer]
+    renderer_classes = [JSONRenderer]
 
     def getdata(self, collection_name):
         db = client["news"]
@@ -37,7 +37,7 @@ class newsList(APIView):
         return Response(r, status=s)
 
 
-class error404(APIView):
+class Error404(APIView):
     renderer_classes = [JSONRenderer]
 
     def custom404(self, request, exception=None):
