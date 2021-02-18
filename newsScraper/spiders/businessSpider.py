@@ -5,13 +5,13 @@ import hashlib
 
 class BusinessspiderSpider(scrapy.Spider):
     name = 'newsSpider'
-    allowed_domains = ['africa.businessinsider.com', 'ew.com', 'skysports.com', 'techcrunch.com', 'elle.com', 'independent.co.uk']
+    allowed_domains = ['africa.businessinsider.com', 'ew.com', 'skysports.com', 'techcrunch.com', 'forbes.com', 'independent.co.uk']
     start_urls = [
         'https://africa.businessinsider.com/',
         'https://ew.com/',
         'https://www.skysports.com/',
         'https://techcrunch.com/',
-        'https://www.elle.com/fashion/',
+        'https://www.forbes.com/lifestyle/',
         'https://www.independent.co.uk/news/world'
     ]
     items: NewsscraperItem = NewsscraperItem()
@@ -145,25 +145,56 @@ class BusinessspiderSpider(scrapy.Spider):
 
         return allNews
 
-    def handlingFashionNews(self, response):
-        containers = response.css('.custom-item-inner')
+    def handlingLifestyleNews(self, response):
         news = []
-        for container in containers:
-            link = "https://www.elle.com"+container.css(".item-title::attr(href)").get()
+
+        top_banner = response.css('.card--large')
+        news.append({
+            "title": top_banner.css("a.headlink::text").get(),
+            "followUpLink": top_banner.css("a.headlink::attr(href)").get(),
+            "image": top_banner.css(".preview__image::attr(background-image)").get(),
+            "published": {
+                "timestamp": None,
+                "date": None
+            }
+        })
+
+        top_articles = response.css('.card--blog')
+        for top_article in top_articles:
+            image = top_article.css(".stream-item__image::attr(style)").re_first(r'url\(([^\)]+)')
+            image.strip('"') if image is not None else None
+            image2 = top_article.css(".ratio16x9::attr(style)").re_first(r'url\(([^\)]+)')
+            image2.strip('"') if image2 is not None else None
             news.append({
-                "title": container.css(".item-title::text").get(),
-                "followUpLink": link,
-                "image": container.css(".custom-item-image img::attr(data-src)").get(),
+                "title": top_article.css(".chansec-special-feature__nonpaid--title::text").get(),
+                "followUpLink": top_article.css(".chansec-special-feature__title-wrapper").css("a::attr(href)").get(),
+                "image": image2 if image2 is not None else image,
                 "published": {
                     "timestamp": None,
                     "date": None
                 }
             })
-        news.pop(0)
+
+        bottom_articles = response.css('.et-promoblock-star-item')
+        for bottom_article in bottom_articles:
+            image = bottom_article.css(".stream-item__image::attr(style)").re_first(r'url\(([^\)]+)')
+            image.strip('"') if image is not None else None
+            image2 = bottom_article.css(".ratio16x9::attr(style)").re_first(r'url\(([^\)]+)')
+            image2.strip('"') if image2 is not None else None
+            news.append({
+                "title": bottom_article.css(".stream-item__title").css("a::text").get(),
+                "followUpLink": bottom_article.css(".stream-item__title").css("a::attr(href)").get(),
+                "image": image if image is not None else image2,
+                "published": {
+                    "timestamp": bottom_article.css(".stream-item__date::attr(data-date)").get(),
+                    "date": None
+                }
+            })
+
         allNews = {
-            "category": "Fashion",
+            "category": "Lifestyle",
             "category_id": 5,
-            "publisher": 'Elle',
+            "publisher": 'Forbes',
             "articles": news
         }
         return allNews
@@ -203,8 +234,8 @@ class BusinessspiderSpider(scrapy.Spider):
             BusinessspiderSpider.items["sportNews"] = self.handlingSportNews(response)
         elif response.url == 'https://techcrunch.com/':
             BusinessspiderSpider.items["techNews"] = self.handlingTechNews(response)
-        elif response.url == 'https://www.elle.com/fashion/':
-            BusinessspiderSpider.items["fashionNews"] = self.handlingFashionNews(response)
+        elif response.url == 'https://www.forbes.com/lifestyle/':
+            BusinessspiderSpider.items["lifestyleNews"] = self.handlingLifestyleNews(response)
         elif response.url == 'https://www.independent.co.uk/news/world':
             BusinessspiderSpider.items["worldNews"] = self.handlingWorldNews(response)
 

@@ -12,5 +12,5 @@ class NewsscraperItem(scrapy.Item):
     entertainmentNews = scrapy.Field()
     sportNews = scrapy.Field()
     techNews = scrapy.Field()
-    fashionNews = scrapy.Field()
+    lifestyleNews = scrapy.Field()
     worldNews = scrapy.Field()

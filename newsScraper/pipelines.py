@@ -22,7 +22,7 @@ class NewsscraperPipeline:
             self.entertainmentCollection = self.db["entertainment"]
             self.sportCollection = self.db["sport"]
             self.techCollection = self.db["technology"]
-            self.fashionCollection = self.db["fashion"]
+            self.fashionCollection = self.db["lifestyle"]
             self.worldCollection = self.db["world"]
 
     def update_data(self, collection, item):
@@ -35,7 +35,7 @@ class NewsscraperPipeline:
         self.entertainmentCollection.insert(dict(item['entertainmentNews'])) if "entertainment" not in self.db.list_collection_names() else self.update_data(self.entertainmentCollection, item['entertainmentNews'])
         self.sportCollection.insert(dict(item['sportNews'])) if "sport" not in self.db.list_collection_names() else self.update_data(self.sportCollection, item['sportNews'])
         self.techCollection.insert(dict(item['techNews'])) if "technology" not in self.db.list_collection_names() else self.update_data(self.techCollection, item['techNews'])
-        self.fashionCollection.insert(dict(item['fashionNews'])) if "fashion" not in self.db.list_collection_names() else self.update_data(self.fashionCollection, item['fashionNews'])
+        self.fashionCollection.insert(dict(item['lifestyleNews'])) if "lifestyle" not in self.db.list_collection_names() else self.update_data(self.fashionCollection, item['lifestyleNews'])
         self.worldCollection.insert(dict(item['worldNews'])) if "world" not in self.db.list_collection_names() else self.update_data(self.worldCollection, item['worldNews'])
 
         return item
