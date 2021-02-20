@@ -32,7 +32,7 @@ class BusinessspiderSpider(scrapy.Spider):
                 previous_title = stripped_title
 
             allArticles.append({
-                "title": title,
+                "title": stripped_title,
                 "subTitle": subtitle.strip() if subtitle is not None else None,
                 "image": container.css("div.itemImage source img::attr(data-original)").get(),
                 "followUpLink": container.css("a.itemWrapper::attr(href)").get(),
@@ -185,6 +185,7 @@ class BusinessspiderSpider(scrapy.Spider):
 
     def handlingLifestyleNews(self, response):
         news = []
+        previous_title = ""
 
         top_banner = response.css('.card--large')
 
@@ -199,7 +200,6 @@ class BusinessspiderSpider(scrapy.Spider):
         })
 
         top_articles = response.css('.card--blog')
-        previous_title = ""
 
         for top_article in top_articles:
             title = top_article.css(".chansec-special-feature__nonpaid--title::text").get()
