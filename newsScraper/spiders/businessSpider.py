@@ -202,9 +202,9 @@ class BusinessspiderSpider(scrapy.Spider):
             else:
                 previous_title = title
             image = top_article.css(".stream-item__image::attr(style)").re_first(r'url\(([^\)]+)')
-            image.strip('"') if image is not None else None
+            image = image.strip('"') if image is not None else None
             image2 = top_article.css(".ratio16x9::attr(style)").re_first(r'url\(([^\)]+)')
-            image2.strip('"') if image2 is not None else None
+            image2 = image2.strip('"') if image2 is not None else None
             news.append({
                 "title": title.strip() if title is not None else None,
                 "followUpLink": top_article.css(".chansec-special-feature__title-wrapper").css("a::attr(href)").get(),
@@ -224,9 +224,10 @@ class BusinessspiderSpider(scrapy.Spider):
                 previous_title = title
 
             image = bottom_article.css(".stream-item__image::attr(style)").re_first(r'url\(([^\)]+)')
-            image.strip('"') if image is not None else None
+            image = image.strip('"') if image is not None else None
             image2 = bottom_article.css(".ratio16x9::attr(style)").re_first(r'url\(([^\)]+)')
-            image2.strip('"') if image2 is not None else None
+            image2 = image2.strip('"') if image2 is not None else None
+
             news.append({
                 "title": title.strip() if title is not None else None,
                 "followUpLink": bottom_article.css(".stream-item__title").css("a::attr(href)").get(),
@@ -243,6 +244,7 @@ class BusinessspiderSpider(scrapy.Spider):
             "publisher": 'Forbes',
             "articles": news
         }
+
         return allNews
 
     def handlingWorldNews(self, response):
