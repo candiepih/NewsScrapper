@@ -101,7 +101,7 @@ CACHES = {
             'PASSWORD': 'C6Eqwn893YWnU2VOaZ3OKY8rjZ3U3i1G',
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         },
-        'KEY_PREFIX': 'exteDataCache'
+        'KEY_PREFIX': 'exteCache'
     }
 }
 
