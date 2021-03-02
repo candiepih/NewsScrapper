@@ -24,7 +24,7 @@ def crawl():
         d.addBoth(lambda _: reactor.stop())
 
 
-@sched.scheduled_job('interval', hours=1)
+@sched.scheduled_job('interval', minutes=30)
 def timed_job():
     crawl()
 
