@@ -22,7 +22,7 @@ from django.views.decorators.cache import cache_page
 # Cache time to live is 15 minutes for each view.
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/<str:category>', cache_page(60*35)(views.NewsList.as_view()), name="exteApi"),
+    path('api/<str:category>', cache_page(60*65)(views.NewsList.as_view()), name="exteNewsApi"),
 ]
 
 handler404 = views.Error404.as_view()
