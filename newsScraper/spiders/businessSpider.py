@@ -1,6 +1,5 @@
 import scrapy
 from ..items import NewsscraperItem
-import hashlib
 
 
 class BusinessspiderSpider(scrapy.Spider):
@@ -21,14 +20,16 @@ class BusinessspiderSpider(scrapy.Spider):
     def handlingBusinessNews(self, response):
         containers = response.css(".col-xs-12")
         allArticles = []
-        previous_title = ""
+        previous_titles = []
         for container in containers:
             title = container.css(".itemTitle::text").get()
             subtitle = container.css(".itemLead::text").get()
-            if title == previous_title:
+            # stripping title to prepare for filtering
+            new_title = title.strip() if title is not None else None
+            if new_title in previous_titles:
                 continue
             else:
-                previous_title = title
+                previous_titles.append(new_title)
 
             allArticles.append({
                 "title": title.strip() if title is not None else None,
@@ -57,13 +58,13 @@ class BusinessspiderSpider(scrapy.Spider):
         topContainers = response.css(".categoryPageHeader__container-details .entityTout__details")
         allArticles = []
 
-        previous_title = ""
+        previous_titles = []
         for topContainer in topContainers:
             title = topContainer.css("a.entityTout__link span::text").get()
-            if title == previous_title:
+            if title in previous_titles:
                 continue
             else:
-                previous_title = title
+                previous_titles.append(title)
 
             allArticles.append({
                 "title": title.strip() if title is not None else None,
@@ -75,10 +76,10 @@ class BusinessspiderSpider(scrapy.Spider):
 
         for container in containers:
             title = container.css(".category-page-item-content-wrapper a span::text").get()
-            if title == previous_title:
+            if title in previous_titles:
                 continue
             else:
-                previous_title = title
+                previous_titles.append(title)
 
             allArticles.append({
                 "title": title.strip() if title is not None else None,
@@ -101,14 +102,14 @@ class BusinessspiderSpider(scrapy.Spider):
     def handlingSportNews(self, response):
         containers = response.css(".sdc-site-tile--has-link")
         articles = []
-        previous_title = ""
+        previous_titles = []
 
         for container in containers:
             title = container.css(".sdc-site-tile__headline-link span.sdc-site-tile__headline-text::text").get()
-            if title == previous_title:
+            if title in previous_titles:
                 continue
             else:
-                previous_title = title
+                previous_titles.append(title)
             category = container.css("a.sdc-site-tile__tag-link::text").get()
             link = container.css("h3.sdc-site-tile__headline a.sdc-site-tile__headline-link::attr(href)").get()
             articles.append({
@@ -121,10 +122,11 @@ class BusinessspiderSpider(scrapy.Spider):
         containers = response.css(".sdc-site-trending__link")
         for container in containers:
             title = container.css("a.sdc-site-trending__link span.sdc-site-trending__link-text::text").get()
-            if title == previous_title:
+            if title in previous_titles:
                 continue
             else:
-                previous_title = title
+                previous_titles.append(title)
+
             link = container.css("a.sdc-site-trending__link::attr(href)").get()
             articles.append({
                 "title": title.strip() if title is not None else None,
@@ -143,7 +145,7 @@ class BusinessspiderSpider(scrapy.Spider):
     def handlingTechNews(self, response):
         containers = response.css(".post-block--unread")
         news = []
-        previous_title = ""
+        previous_titles = []
 
         for container in containers:
             date = container.css("header.post-block__header div.post-block__meta time::text").get()
@@ -151,10 +153,10 @@ class BusinessspiderSpider(scrapy.Spider):
                 "header.post-block__header h2.post-block__title a.post-block__title__link::text").get()
             subtitle = container.css(".post-block__content::text").get()
 
-            if title == previous_title:
+            if title in previous_titles:
                 continue
             else:
-                previous_title = title
+                previous_titles.append(title)
 
             news.append({
                 "title": title.strip() if title is not None else None,
@@ -179,7 +181,7 @@ class BusinessspiderSpider(scrapy.Spider):
 
     def handlingLifestyleNews(self, response):
         news = []
-        previous_title = ""
+        previous_titles = []
 
         top_banner = response.css('.card--large')
 
@@ -197,10 +199,11 @@ class BusinessspiderSpider(scrapy.Spider):
 
         for top_article in top_articles:
             title = top_article.css(".chansec-special-feature__nonpaid--title::text").get()
-            if title == previous_title:
+            if title in previous_titles:
                 continue
             else:
-                previous_title = title
+                previous_titles.append(title)
+
             image = top_article.css(".stream-item__image::attr(style)").re_first(r'url\(([^\)]+)')
             image = image.strip('"') if image is not None else None
             image2 = top_article.css(".ratio16x9::attr(style)").re_first(r'url\(([^\)]+)')
@@ -218,10 +221,10 @@ class BusinessspiderSpider(scrapy.Spider):
         bottom_articles = response.css('.et-promoblock-star-item')
         for bottom_article in bottom_articles:
             title = bottom_article.css(".stream-item__title").css("a::text").get()
-            if title == previous_title:
+            if title in previous_titles:
                 continue
             else:
-                previous_title = title
+                previous_titles.append(title)
 
             image = bottom_article.css(".stream-item__image::attr(style)").re_first(r'url\(([^\)]+)')
             image = image.strip('"') if image is not None else None
@@ -250,14 +253,14 @@ class BusinessspiderSpider(scrapy.Spider):
     def handlingWorldNews(self, response):
         containers = response.css(".article-default")
         articles = []
-        previous_title = ""
+        previous_titles = []
 
         for container in containers:
             title = container.css(".title::text").get()
-            if title == previous_title:
+            if title in previous_titles:
                 continue
             else:
-                previous_title = title
+                previous_titles.append(title)
 
             url = "https://www.independent.co.uk" + container.css(".title::attr(href)").get()
             articles.append({
