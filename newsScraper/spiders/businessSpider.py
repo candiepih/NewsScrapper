@@ -18,12 +18,12 @@ class BusinessspiderSpider(scrapy.Spider):
 
     # HANDLES BUSINESS NEWS
     def handlingBusinessNews(self, response):
-        containers = response.css(".col-xs-12")
+        containers = response.css(".layout-item")
         allArticles = []
         previous_titles = []
         for container in containers:
-            title = container.css(".itemTitle::text").get()
-            subtitle = container.css(".itemLead::text").get()
+            title = container.css("div.gradient-overlay a::attr(title)").get()
+            subtitle = None
             # stripping title to prepare for filtering
             new_title = title.strip() if title is not None else None
             if new_title in previous_titles:
@@ -34,15 +34,14 @@ class BusinessspiderSpider(scrapy.Spider):
             allArticles.append({
                 "title": title.strip() if title is not None else None,
                 "subTitle": subtitle.strip() if subtitle is not None else None,
-                "image": container.css("div.itemImage source img::attr(data-original)").get(),
-                "followUpLink": container.css("a.itemWrapper::attr(href)").get(),
+                "image": container.css("div.imageBlock picture source::attr(data-original)").get(),
+                "followUpLink": container.css("div.gradient-overlay a::attr(href)").get(),
                 "published": {
                     "timestamp": None,
-                    "date": container.css("span.itemDate::text").get(),
+                    "date": None,
                 },
             })
-        allArticles.pop(0)
-        allArticles.pop(1)
+
         businessNews = {
             "category": "Business",
             "category_id": 1,
