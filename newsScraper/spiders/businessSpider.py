@@ -118,20 +118,6 @@ class BusinessspiderSpider(scrapy.Spider):
                 "followUpLink": response.url + link[1:] if link[0][:1] == "/" else link
             })
 
-        containers = response.css(".sdc-site-trending__link")
-        for container in containers:
-            title = container.css("a.sdc-site-trending__link span.sdc-site-trending__link-text::text").get()
-            if title in previous_titles:
-                continue
-            else:
-                previous_titles.append(title)
-
-            link = container.css("a.sdc-site-trending__link::attr(href)").get()
-            articles.append({
-                "title": title.strip() if title is not None else None,
-                "followUpLink": response.url + link[1:] if link[0][:1] == "/" else link
-            })
-
         sportNews = {
             "category": "Sport",
             "category_id": 3,
@@ -194,29 +180,6 @@ class BusinessspiderSpider(scrapy.Spider):
             }
         })
 
-        top_articles = response.css('.card--blog')
-
-        for top_article in top_articles:
-            title = top_article.css(".chansec-special-feature__nonpaid--title::text").get()
-            if title in previous_titles:
-                continue
-            else:
-                previous_titles.append(title)
-
-            image = top_article.css(".stream-item__image::attr(style)").re_first(r'url\(([^\)]+)')
-            image = image.strip('"') if image is not None else None
-            image2 = top_article.css(".ratio16x9::attr(style)").re_first(r'url\(([^\)]+)')
-            image2 = image2.strip('"') if image2 is not None else None
-            news.append({
-                "title": title.strip() if title is not None else None,
-                "followUpLink": top_article.css(".chansec-special-feature__title-wrapper").css("a::attr(href)").get(),
-                "image": image2 if image2 is not None else image,
-                "published": {
-                    "timestamp": None,
-                    "date": None
-                }
-            })
-
         bottom_articles = response.css('.et-promoblock-star-item')
         for bottom_article in bottom_articles:
             title = bottom_article.css(".stream-item__title").css("a::text").get()
@@ -246,7 +209,6 @@ class BusinessspiderSpider(scrapy.Spider):
             "publisher": 'Forbes',
             "articles": news
         }
-
         return allNews
 
     def handlingWorldNews(self, response):
