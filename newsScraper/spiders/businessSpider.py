@@ -1,19 +1,60 @@
 import scrapy
 from ..items import NewsscraperItem
+from .agregator.world import World
+from .agregator.sport import Sport
+from .agregator.entertainment import Entertainment
+from .agregator.tech import Tech
 
 
 class BusinessspiderSpider(scrapy.Spider):
     name = 'newsSpider'
-    allowed_domains = ['africa.businessinsider.com', 'ew.com', 'skysports.com', 'techcrunch.com', 'forbes.com', 'independent.co.uk']
+    allowed_domains = [
+        'africa.businessinsider.com',
+        'ew.com',
+        'skysports.com',
+        'techcrunch.com',
+        'forbes.com',
+        'independent.co.uk',
+        'foxnews.com',
+        'bt.com',
+        'traileraddict.com',
+        'theverge.com',
+        'gamespot.com'
+    ]
+
     start_urls = [
         'https://africa.businessinsider.com/',
         'https://ew.com/',
         'https://www.skysports.com/',
         'https://techcrunch.com/',
         'https://www.forbes.com/lifestyle/',
+        'https://www.independent.co.uk/news/world',
+        'https://www.foxnews.com/world',
+        'https://www.bt.com/sport/football/videos',
+        'https://www.traileraddict.com',
+        'https://www.theverge.com',
+        'https://www.gamespot.com'
+    ]
+    tech_urls = [
+        'https://techcrunch.com/',
+        'https://www.theverge.com',
+        'https://www.gamespot.com'
+    ]
+    world_urls = [
+        'https://www.foxnews.com/world',
         'https://www.independent.co.uk/news/world'
     ]
+    sport_urls = [
+        'https://www.skysports.com/',
+        'https://www.bt.com/sport/football/videos'
+    ]
+    entertainment_urls = [
+        'https://ew.com/',
+        'https://www.traileraddict.com'
+    ]
 
+    count_urls = 0
+    expected_urls = len(start_urls)
     items: NewsscraperItem = NewsscraperItem()
 
     # HANDLES BUSINESS NEWS
@@ -48,121 +89,7 @@ class BusinessspiderSpider(scrapy.Spider):
             "publisher": 'Business Insider',
             "articles": allArticles
         }
-
         return businessNews
-
-    # HANDLING ENTERTAINMENT NEWS
-    def handlingEntertainmentNews(self, response):
-        containers = response.css(".category-page-item")
-        topContainers = response.css(".categoryPageHeader__container-details .entityTout__details")
-        allArticles = []
-
-        previous_titles = []
-        for topContainer in topContainers:
-            title = topContainer.css("a.entityTout__link span::text").get()
-            if title in previous_titles:
-                continue
-            else:
-                previous_titles.append(title)
-
-            allArticles.append({
-                "title": title.strip() if title is not None else None,
-                "image": topContainer.css(".entityTout__image div.lazy-image::attr(data-src)").get(),
-                "category": None,
-                "followUpLink": topContainer.css("a.entityTout__link::attr(href)").get(),
-                "published": None,
-            })
-
-        for container in containers:
-            title = container.css(".category-page-item-content-wrapper a span::text").get()
-            if title in previous_titles:
-                continue
-            else:
-                previous_titles.append(title)
-
-            allArticles.append({
-                "title": title.strip() if title is not None else None,
-                "image": container.css(".category-page-item-image div.lazy-image::attr(data-src)").get(),
-                "category": container.css(".category-page-item-content-wrapper").css(".categoryPageItemInfo").css(".category-page-item-category-label::text").get(),
-                "followUpLink": container.css(".category-page-item-content-wrapper a::attr(href)").get(),
-                "published": container.css(".category-page-item-content-wrapper").css(".categoryPageItemInfo").css(
-                    ".category-page-item-timestamp::text").get(),
-            })
-
-        entertainmentNews = {
-            "category": "Entertainment",
-            "publisher": 'Ew',
-            "category_id": 2,
-            "articles": allArticles
-        }
-
-        return entertainmentNews
-
-    def handlingSportNews(self, response):
-        containers = response.css(".sdc-site-tile--has-link")
-        articles = []
-        previous_titles = []
-
-        for container in containers:
-            title = container.css(".sdc-site-tile__headline-link span.sdc-site-tile__headline-text::text").get()
-            if title in previous_titles:
-                continue
-            else:
-                previous_titles.append(title)
-            category = container.css("a.sdc-site-tile__tag-link::text").get()
-            link = container.css("h3.sdc-site-tile__headline a.sdc-site-tile__headline-link::attr(href)").get()
-            articles.append({
-                "title": title.strip() if title is not None else None,
-                "image": container.css(".sdc-site-tile__image-wrap source img::attr(src)").get(),
-                "category": category.strip() if category is not None else None,
-                "followUpLink": response.url + link[1:] if link[0][:1] == "/" else link
-            })
-
-        sportNews = {
-            "category": "Sport",
-            "category_id": 3,
-            "publisher": 'Sky Sports',
-            "articles": articles
-        }
-
-        return sportNews
-
-    def handlingTechNews(self, response):
-        containers = response.css(".post-block--unread")
-        news = []
-        previous_titles = []
-
-        for container in containers:
-            date = container.css("header.post-block__header div.post-block__meta time::text").get()
-            title = container.css(
-                "header.post-block__header h2.post-block__title a.post-block__title__link::text").get()
-            subtitle = container.css(".post-block__content::text").get()
-
-            if title in previous_titles:
-                continue
-            else:
-                previous_titles.append(title)
-
-            news.append({
-                "title": title.strip() if title is not None else None,
-                "subTitle": subtitle.strip() if subtitle is not None else subtitle,
-                "followUpLink": container.css(
-                    "header.post-block__header h2.post-block__title a.post-block__title__link::attr(href)").get(),
-                "published": {
-                    "timestamp": container.css(
-                        "header.post-block__header div.post-block__meta time::attr(datetime)").get(),
-                    "date": date.strip() if date is not None else date
-                },
-                "image": container.css("footer.post-block__footer img::attr(src)").get()
-            })
-        allNews = {
-            "category": "Technology",
-            "category_id": 4,
-            "publisher": 'Techcrunch',
-            "articles": news
-        }
-
-        return allNews
 
     def handlingLifestyleNews(self, response):
         news = []
@@ -211,64 +138,30 @@ class BusinessspiderSpider(scrapy.Spider):
         }
         return allNews
 
-    def handlingWorldNews(self, response):
-        containers = response.css(".article-default")
-        articles = []
-        previous_titles = []
-
-        for container in containers:
-            title = container.css(".title::text").get()
-            if title in previous_titles:
-                continue
-            else:
-                previous_titles.append(title)
-
-            url = "https://www.independent.co.uk" + container.css(".title::attr(href)").get()
-            articles.append({
-                "title": title.strip() if title is not None else None,
-                "followUpLink": url,
-                "image": container.css(".image-wrap amp-img::attr(src)").get(),
-                "genre": container.css(".capsule::text").get(),
-                "published": {
-                    "timestamp": None,
-                    "time": None
-                },
-            })
-        news = {
-            "category": "World",
-            "category_id": 6,
-            "publisher": 'Independent',
-            "articles": articles
-        }
-
-        return news
-
     def parse(self, response):
         if response.url == 'https://africa.businessinsider.com/':
             BusinessspiderSpider.items["businessNews"] = self.handlingBusinessNews(response)
-        elif response.url == 'https://ew.com/':
-            BusinessspiderSpider.items["entertainmentNews"] = self.handlingEntertainmentNews(response)
-        elif response.url == 'https://www.skysports.com/':
-            BusinessspiderSpider.items["sportNews"] = self.handlingSportNews(response)
-        elif response.url == 'https://techcrunch.com/':
-            BusinessspiderSpider.items["techNews"] = self.handlingTechNews(response)
+            self.count_urls += 1
+        elif response.url in self.entertainment_urls:
+            entertainment = Entertainment(response, response.url)
+            BusinessspiderSpider.items["entertainmentNews"] = entertainment.news
+            self.count_urls += 1
+        elif response.url in self.sport_urls:
+            sport = Sport(response, response.url)
+            BusinessspiderSpider.items["sportNews"] = sport.news
+            self.count_urls += 1
+        elif response.url in self.tech_urls:
+            tech = Tech(response, response.url)
+            BusinessspiderSpider.items["techNews"] = tech.news
+            self.count_urls += 1
         elif response.url == 'https://www.forbes.com/lifestyle/':
             BusinessspiderSpider.items["lifestyleNews"] = self.handlingLifestyleNews(response)
-        elif response.url == 'https://www.independent.co.uk/news/world':
-            BusinessspiderSpider.items["worldNews"] = self.handlingWorldNews(response)
+            self.count_urls += 1
+        elif response.url in self.world_urls:
+            world = World(response, response.url)
+            BusinessspiderSpider.items["worldNews"] = world.news
+            self.count_urls += 1
 
-        countAllUrls = 0
-
-        for url in BusinessspiderSpider.start_urls:
-            countAllUrls += 1
-
-        if len(BusinessspiderSpider.items) == countAllUrls:
+        if self.count_urls == self.expected_urls:
             yield BusinessspiderSpider.items
-
-
-
-
-
-
-
 
