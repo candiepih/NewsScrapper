@@ -8,16 +8,15 @@
 from itemadapter import ItemAdapter
 import pymongo
 
-password = "mutheeal.am."
-client = pymongo.MongoClient(
-        "mongodb+srv://candiepih:" + password + "@cluster0.1fcmf.mongodb.net/news?retryWrites=true&w=majority")
-# client = pymongo.MongoClient("localhost", 27017)
-
 
 class NewsscraperPipeline:
     def __init__(self):
-        with client:
-            self.db = client.news
+        password = "mutheeal.am."
+        self.client = pymongo.MongoClient(
+                "mongodb+srv://candiepih:" + password + "@cluster0.1fcmf.mongodb.net/news?retryWrites=true&w=majority")
+        # self.client = pymongo.MongoClient("localhost", 27017)
+        with self.client:
+            self.db = self.client.news
             self.businessCollection = self.db["business"]
             self.entertainmentCollection = self.db["entertainment"]
             self.sportCollection = self.db["sport"]
@@ -25,17 +24,28 @@ class NewsscraperPipeline:
             self.fashionCollection = self.db["lifestyle"]
             self.worldCollection = self.db["world"]
 
-    def update_data(self, collection, item):
+    @staticmethod
+    def update_data(collection, item):
         query = {"category_id": item['category_id']}
-        new_data = {"$set": {"articles": item["articles"]}}
-        collection.update_many(query, new_data)
+        collection.find_and_modify(query=query, update={"$set": {"articles": item["articles"]}})
+        if "more_articles" in item.keys():
+            collection.find_and_modify(query=query, update={"$set": {"more_articles": item["more_articles"]}})
+        if "videos" in item.keys():
+            collection.find_and_modify(query=query, update={"$set": {"videos": item["videos"]}})
+
+    def handle_collections(self, collection, item, item_name, category):
+        if category not in self.db.list_collection_names():
+            collection.insert(dict(item[item_name]))
+        else:
+            self.update_data(collection, item[item_name])
 
     def process_item(self, item, spider):
-        self.businessCollection.insert(dict(item['businessNews'])) if "business" not in self.db.list_collection_names() else self.update_data(self.businessCollection, item['businessNews'])
-        self.entertainmentCollection.insert(dict(item['entertainmentNews'])) if "entertainment" not in self.db.list_collection_names() else self.update_data(self.entertainmentCollection, item['entertainmentNews'])
-        self.sportCollection.insert(dict(item['sportNews'])) if "sport" not in self.db.list_collection_names() else self.update_data(self.sportCollection, item['sportNews'])
-        self.techCollection.insert(dict(item['techNews'])) if "technology" not in self.db.list_collection_names() else self.update_data(self.techCollection, item['techNews'])
-        self.fashionCollection.insert(dict(item['lifestyleNews'])) if "lifestyle" not in self.db.list_collection_names() else self.update_data(self.fashionCollection, item['lifestyleNews'])
-        self.worldCollection.insert(dict(item['worldNews'])) if "world" not in self.db.list_collection_names() else self.update_data(self.worldCollection, item['worldNews'])
+        if bool(item):
+            self.handle_collections(self.businessCollection, item, "businessNews", "business")
+            self.handle_collections(self.entertainmentCollection, item, "entertainmentNews", "entertainment")
+            self.handle_collections(self.sportCollection, item, "sportNews", "sport")
+            self.handle_collections(self.techCollection, item, "techNews", "technology")
+            self.handle_collections(self.fashionCollection, item, "lifestyleNews", "lifestyle")
+            self.handle_collections(self.worldCollection, item, "worldNews", "world")
 
         return item

@@ -48,13 +48,15 @@ class World:
                 previous_titles.append(title)
 
             url = container.css(".title a::attr(href)").get()
-            if url is None:
+            image = container.css(".m img::attr(src)").get()
+            if url is None or image is None:
                 continue
 
             articles.append({
                 "title": title.strip() if title is not None else None,
                 "followUpLink": "https://www.foxnews.com" + url,
-                "image": container.css(".m picture").css("img::attr(src)").get(),
+                "image": image,
+                "Genre": container.css(".eyebrow a::text").get(),
                 "publisher": 'Fox news',
                 "published": {
                     "timestamp": None,
