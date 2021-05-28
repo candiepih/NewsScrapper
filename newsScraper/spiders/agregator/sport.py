@@ -39,8 +39,8 @@ class Sport:
             else:
                 previous_titles.append(title)
 
-            link = container.css(".sdc-site-carousel__headline a::attr(href)").get()
-            image = container.css(".sdc-site-carousel__rail-image-wrap picture")
+            link = item.css(".sdc-site-carousel__headline a::attr(href)").get()
+            image = item.css(".sdc-site-carousel__rail-image-wrap picture")
             videos.append({
                     "title": title.strip() if title is not None else None,
                     "image": image.css("img::attr(src)").get(),
