@@ -49,16 +49,16 @@ class Entertainment:
 
         self.__news["articles"] = all_articles
 
-    def trailer_addict_news(self):
-        containers = self.response.css("#top_features ul li")
+    def imdb_trailers(self):
+        containers = self.response.css(".ipc-poster-card")
         articles = []
         previous_titles = []
-
         for container in containers:
-            title = container.css("a h2::text").get()
-            image = container.css("li::attr(style)").re_first(r'url\(([^\)]+)')
+            title = container.css("a.ipc-poster-card__title::text").get()
+            image = container.css("div.ipc-media__img img::attr(src)").get()
+            url = container.css("a.ipc-lockup-overlay::attr(href)").get()
 
-            if title in previous_titles:
+            if title in previous_titles or url is None or image is None:
                 continue
             else:
                 previous_titles.append(title)
@@ -66,16 +66,16 @@ class Entertainment:
             articles.append({
                 "title": title.strip() if title is not None else None,
                 "image": image,
-                "followUpLink": container.css("a::attr(href)").get(),
-                "publisher": "Trailer Addict",
+                "followUpLink": "https://www.imdb.com{}".format(url),
+                "Genre": container.css(".ipc-poster-card__top::text").get(),
+                "publisher": "Imdb",
                 "published": None,
             })
-
         self.__news["videos"] = articles
 
     def aggregator(self):
-        if self.url == 'https://www.traileraddict.com':
-            self.trailer_addict_news()
+        if self.url == 'https://www.imdb.com/trailers/':
+            self.imdb_trailers()
         elif self.url == 'https://ew.com/':
             self.ew_news()
 

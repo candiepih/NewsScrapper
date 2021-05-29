@@ -17,7 +17,7 @@ class BusinessspiderSpider(scrapy.Spider):
         'independent.co.uk',
         'foxnews.com',
         'bt.com',
-        'traileraddict.com',
+        'imdb.com',
         'theverge.com',
         'gamespot.com'
     ]
@@ -31,7 +31,7 @@ class BusinessspiderSpider(scrapy.Spider):
         'https://www.independent.co.uk/news/world',
         'https://www.foxnews.com/world',
         'https://www.bt.com/sport/football/videos',
-        'https://www.traileraddict.com',
+        'https://www.imdb.com/trailers/',
         'https://www.theverge.com',
         'https://www.gamespot.com'
     ]
@@ -50,7 +50,7 @@ class BusinessspiderSpider(scrapy.Spider):
     ]
     entertainment_urls = [
         'https://ew.com/',
-        'https://www.traileraddict.com'
+        'https://www.imdb.com/trailers/'
     ]
 
     count_urls = 0
