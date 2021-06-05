@@ -85,11 +85,47 @@ class Sport:
         else:
             Sport.__news["videos"] = videos
 
+    def highlights_football(self):
+        parent = self.response.css("div.td_with_ajax_pagination")
+        containers = parent.css(".td-module-container")
+        videos = []
+        previous_titles = []
+
+        for container in containers:
+            title = container.css("h3.entry-title a::text").get()
+            image = container.css(".td-image-container a span::attr(style)").re_first(r'url\(([^\)]+)')
+            url = container.css("h3.entry-title a::attr(href)").get()
+            Genre = container.css("a.td-post-category::text").get()
+
+            if title in previous_titles or title is None or image is None or url is None:
+                continue
+            else:
+                previous_titles.append(title)
+
+            videos.append({
+                "title": title.strip(),
+                "image": image.strip("'"),
+                "source": "Highlights Football",
+                "Genre": Genre,
+                "category": None,
+                "followUpLink": url,
+                "published": {
+                    "timestamp": container.css("time.entry-date::attr(datetime)").get(),
+                    "date": None
+                }
+            })
+        if "videos" in Sport.__news.keys():
+            [Sport.__news["videos"].append(v) for v in videos]
+        else:
+            Sport.__news["videos"] = videos
+
     def aggregator(self):
         if self.url == 'https://www.skysports.com/':
             self.sky_news()
         elif self.url == 'https://www.bt.com/sport/football/videos':
             self.bt_news()
+        elif self.url == "https://highlightsfootball.net/":
+            self.highlights_football()
 
     @property
     def news(self):
