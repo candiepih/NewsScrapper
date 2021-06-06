@@ -85,16 +85,16 @@ class Sport:
         else:
             Sport.__news["videos"] = videos
 
-    def highlights_football(self):
-        parent = self.response.css("div.td_with_ajax_pagination")
-        containers = parent.css(".td-module-container")
+    def soccer_highlights(self):
+        parent = self.response.css("div.td-pb-span8")
+        containers = parent.css(".td_module_wrap")
         videos = []
         previous_titles = []
 
         for container in containers:
-            title = container.css("h3.entry-title a::text").get()
-            image = container.css(".td-image-container a span::attr(style)").re_first(r'url\(([^\)]+)')
-            url = container.css("h3.entry-title a::attr(href)").get()
+            title = container.css("h3.td-module-title a::text").get()
+            image = container.css(".td-image-wrap img::attr(src)").get()
+            url = container.css("h3.td-module-title a::attr(href)").get()
             Genre = container.css("a.td-post-category::text").get()
 
             if title in previous_titles or title is None or image is None or url is None:
@@ -105,12 +105,12 @@ class Sport:
             videos.append({
                 "title": title.strip(),
                 "image": image.strip("'"),
-                "source": "Highlights Football",
+                "source": "Soccer Highlights",
                 "Genre": Genre,
                 "category": None,
                 "followUpLink": url,
                 "published": {
-                    "timestamp": container.css("time.entry-date::attr(datetime)").get(),
+                    "timestamp": None,
                     "date": None
                 }
             })
@@ -124,8 +124,8 @@ class Sport:
             self.sky_news()
         elif self.url == 'https://www.bt.com/sport/football/videos':
             self.bt_news()
-        elif self.url == "https://highlightsfootball.net/":
-            self.highlights_football()
+        elif self.url == "https://www.soccerhighlights.net/":
+            self.soccer_highlights()
 
     @property
     def news(self):

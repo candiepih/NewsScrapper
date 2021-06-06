@@ -20,7 +20,7 @@ class BusinessspiderSpider(scrapy.Spider):
         'imdb.com',
         'theverge.com',
         'gamespot.com',
-        'highlightsfootball.net',
+        'soccerhighlights.net',
     ]
 
     start_urls = [
@@ -35,7 +35,7 @@ class BusinessspiderSpider(scrapy.Spider):
         'https://www.imdb.com/trailers/',
         'https://www.theverge.com',
         'https://www.gamespot.com',
-        'https://highlightsfootball.net/',
+        'https://www.soccerhighlights.net/',
     ]
     tech_urls = [
         'https://techcrunch.com/',
@@ -49,7 +49,7 @@ class BusinessspiderSpider(scrapy.Spider):
     sport_urls = [
         'https://www.skysports.com/',
         'https://www.bt.com/sport/football/videos',
-        'https://highlightsfootball.net/'
+        'https://www.soccerhighlights.net/'
     ]
     entertainment_urls = [
         'https://ew.com/',
