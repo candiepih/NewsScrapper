@@ -92,7 +92,7 @@ class Tech:
             link = container.css(".card-item__content a::attr(href)").get()
             articles.append({
                 "title": title.strip() if title is not None else None,
-                "followUpLink": link,
+                "followUpLink": link if link[0] != "/" else "{}{}".format(self.url, link),
                 "image": image,
                 "publisher": "Game Spot",
                 "published": {
