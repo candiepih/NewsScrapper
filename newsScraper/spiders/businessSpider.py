@@ -4,6 +4,14 @@ from .agregator.world import World
 from .agregator.sport import Sport
 from .agregator.entertainment import Entertainment
 from .agregator.tech import Tech
+from .agregator.politics import Politics
+from .agregator.counties import Counties
+from .agregator.education import Education
+from .agregator.lifestyle import Lifestyle
+from .agregator.business import Business
+from .agregator.topbuzz import TopBuzz
+from .agregator.eastafrica import EastAfrica
+from .agregator.videos import Videos
 
 
 class BusinessspiderSpider(scrapy.Spider):
@@ -21,6 +29,17 @@ class BusinessspiderSpider(scrapy.Spider):
         'theverge.com',
         'gamespot.com',
         'soccerhighlights.net',
+        'michezoafrika.com'
+        'the-star.co.ke',
+        'standardmedia.co.ke',
+        'nation.africa',
+        'mpasho.co.ke',
+        'ghafla.com',
+        'tuko.co.ke'
+        'businessdailyafrica.com',
+        'kenyanwallstreet.com',
+        'kenyans.co.ke',
+        'theeastafrican.co.ke'
     ]
 
     start_urls = [
@@ -36,6 +55,21 @@ class BusinessspiderSpider(scrapy.Spider):
         'https://www.theverge.com',
         'https://www.gamespot.com',
         'https://www.soccerhighlights.net/',
+        'https://www.michezoafrika.com/news/list',
+        'https://www.the-star.co.ke/sports/',
+        'https://www.standardmedia.co.ke/category/3/politics',
+        'https://nation.africa/kenya/news/politics',
+        'https://nation.africa/kenya/counties',
+        'https://www.standardmedia.co.ke/category/56/education',
+        'https://mpasho.co.ke/lifestyle/',
+        'https://mpasho.co.ke/entertainment/',
+        'http://www.ghafla.com/ke/tag/ghafla-entertainment-news/',
+        'https://www.tuko.co.ke/entertainment/',
+        'https://www.businessdailyafrica.com/',
+        'https://kenyanwallstreet.com/category/kenyan-news/',
+        'https://www.kenyans.co.ke/news',
+        'https://www.tuko.co.ke/latest/',
+        'https://www.theeastafrican.co.ke/'
     ]
     tech_urls = [
         'https://techcrunch.com/',
@@ -49,122 +83,105 @@ class BusinessspiderSpider(scrapy.Spider):
     sport_urls = [
         'https://www.skysports.com/',
         'https://www.bt.com/sport/football/videos',
-        'https://www.soccerhighlights.net/'
+        'https://www.soccerhighlights.net/',
+        'https://www.michezoafrika.com/news/list',
+        'https://www.the-star.co.ke/sports/'
     ]
     entertainment_urls = [
         'https://ew.com/',
         'https://www.imdb.com/trailers/',
+        'https://mpasho.co.ke/entertainment/',
+        'http://www.ghafla.com/ke/tag/ghafla-entertainment-news/',
+        'https://www.tuko.co.ke/entertainment/'
+    ]
+    politics_urls = [
+        'https://www.standardmedia.co.ke/category/3/politics',
+        'https://nation.africa/kenya/news/politics'
+    ]
+    counties_urls = [
+        'https://nation.africa/kenya/counties'
+    ]
+    lifestyle_urls = [
+        'https://www.forbes.com/lifestyle/',
+        'https://mpasho.co.ke/lifestyle/'
+    ]
+    business_urls = [
+        'https://africa.businessinsider.com/',
+        'https://www.businessdailyafrica.com/',
+        'https://kenyanwallstreet.com/category/kenyan-news/'
+    ]
+    top_buzz_urls = [
+        "https://www.kenyans.co.ke/news",
+        "https://www.tuko.co.ke/latest/"
+    ]
+    east_africa = [
+        'https://www.theeastafrican.co.ke/'
     ]
 
+    videos_dict = {
+        "category": "Videos",
+        "category_id": 9,
+        "videos": [],
+    }
     count_urls = 0
-    expected_urls = len(start_urls)
+    expected_urls = (len(start_urls) - 1)
     items: NewsscraperItem = NewsscraperItem()
 
-    # HANDLES BUSINESS NEWS
-    def handlingBusinessNews(self, response):
-        containers = response.css(".layout-item")
-        allArticles = []
-        previous_titles = []
-        for container in containers:
-            title = container.css("div.gradient-overlay a::attr(title)").get()
-            subtitle = None
-            # stripping title to prepare for filtering
-            new_title = title.strip() if title is not None else None
-            if new_title in previous_titles:
-                continue
-            else:
-                previous_titles.append(new_title)
-
-            allArticles.append({
-                "title": title.strip() if title is not None else None,
-                "subTitle": subtitle.strip() if subtitle is not None else None,
-                "image": container.css("div.imageBlock picture source::attr(data-original)").get(),
-                "followUpLink": container.css("div.gradient-overlay a::attr(href)").get(),
-                "published": {
-                    "timestamp": None,
-                    "date": None,
-                },
-            })
-
-        businessNews = {
-            "category": "Business",
-            "category_id": 1,
-            "publisher": 'Business Insider',
-            "articles": allArticles
+    @staticmethod
+    def organise_data(category_id, category_name, news_data):
+        data = {
+            "category": category_name,
+            "category_id": category_id,
+            "news": news_data,
         }
-        return businessNews
-
-    def handlingLifestyleNews(self, response):
-        news = []
-        previous_titles = []
-
-        top_banner = response.css('.card--large')
-
-        news.append({
-            "title": top_banner.css("a.headlink::text").get(),
-            "followUpLink": top_banner.css("a.headlink::attr(href)").get(),
-            "image": top_banner.css(".preview__image::attr(background-image)").get(),
-            "published": {
-                "timestamp": None,
-                "date": None
-            }
-        })
-
-        bottom_articles = response.css('.et-promoblock-star-item')
-        for bottom_article in bottom_articles:
-            title = bottom_article.css(".stream-item__title").css("a::text").get()
-            if title in previous_titles:
-                continue
-            else:
-                previous_titles.append(title)
-
-            image = bottom_article.css(".stream-item__image::attr(style)").re_first(r'url\(([^\)]+)')
-            image = image.strip('"') if image is not None else None
-            image2 = bottom_article.css(".ratio16x9::attr(style)").re_first(r'url\(([^\)]+)')
-            image2 = image2.strip('"') if image2 is not None else None
-
-            news.append({
-                "title": title.strip() if title is not None else None,
-                "followUpLink": bottom_article.css(".stream-item__title").css("a::attr(href)").get(),
-                "image": image if image is not None else image2,
-                "published": {
-                    "timestamp": bottom_article.css(".stream-item__date::attr(data-date)").get(),
-                    "date": None
-                }
-            })
-
-        allNews = {
-            "category": "Lifestyle",
-            "category_id": 5,
-            "publisher": 'Forbes',
-            "articles": news
-        }
-        return allNews
+        return data
 
     def parse(self, response):
-        if response.url == 'https://africa.businessinsider.com/':
-            BusinessspiderSpider.items["businessNews"] = self.handlingBusinessNews(response)
+        if response.url in self.business_urls:
+            business = Business(response)
+            BusinessspiderSpider.items["businessNews"] = business.news
             self.count_urls += 1
         elif response.url in self.entertainment_urls:
-            entertainment = Entertainment(response, response.url)
+            entertainment = Entertainment(response, self.videos_dict["videos"])
             BusinessspiderSpider.items["entertainmentNews"] = entertainment.news
             self.count_urls += 1
         elif response.url in self.sport_urls:
-            sport = Sport(response, response.url)
+            sport = Sport(response, self.videos_dict["videos"])
             BusinessspiderSpider.items["sportNews"] = sport.news
             self.count_urls += 1
         elif response.url in self.tech_urls:
-            tech = Tech(response, response.url)
+            tech = Tech(response)
             BusinessspiderSpider.items["techNews"] = tech.news
             self.count_urls += 1
-        elif response.url == 'https://www.forbes.com/lifestyle/':
-            BusinessspiderSpider.items["lifestyleNews"] = self.handlingLifestyleNews(response)
+        elif response.url in self.lifestyle_urls:
+            lifestyle = Lifestyle(response)
+            BusinessspiderSpider.items["lifestyleNews"] = lifestyle.news
             self.count_urls += 1
         elif response.url in self.world_urls:
-            world = World(response, response.url)
+            world = World(response)
             BusinessspiderSpider.items["worldNews"] = world.news
+            self.count_urls += 1
+        elif response.url in self.top_buzz_urls:
+            top_buzz = TopBuzz(response)
+            BusinessspiderSpider.items["topBuzzNews"] = top_buzz.news
+            self.count_urls += 1
+        elif response.url in self.east_africa:
+            east_africa = EastAfrica(response)
+            BusinessspiderSpider.items["eastAfricaNews"] = east_africa.news
+            self.count_urls += 1
+        elif response.url in self.politics_urls:
+            politics = Politics(response)
+            BusinessspiderSpider.items["politicsNews"] = politics.news
+            self.count_urls += 1
+        elif response.url in self.counties_urls:
+            counties = Counties(response)
+            BusinessspiderSpider.items["countiesNews"] = counties.news
+            self.count_urls += 1
+        elif response.url == 'https://www.standardmedia.co.ke/category/56/education':
+            education = Education(response)
+            BusinessspiderSpider.items["educationNews"] = education.news
             self.count_urls += 1
 
         if self.count_urls == self.expected_urls:
+            BusinessspiderSpider.items["videos"] = self.videos_dict
             yield BusinessspiderSpider.items
-

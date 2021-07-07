@@ -1,13 +1,9 @@
 class World:
-    __news = {
-        "category": "World",
-        "category_id": 6,
-        "publisher": 'Independent',
-    }
+    __news = []
 
-    def __init__(self, response, url):
+    def __init__(self, response):
         self.response = response
-        self.url = url
+        self.url = response.url
         self.aggregator()
 
     def independent_news(self):
@@ -33,7 +29,10 @@ class World:
                     "time": None
                 },
             })
-        World.__news["articles"] = articles
+        World.__news.append({
+            "publisher": "Independent News",
+            "articles": articles
+        })
 
     def fox_news(self):
         containers = self.response.css(".article")
@@ -63,7 +62,10 @@ class World:
                     "time": None
                 },
             })
-        World.__news["more_articles"] = articles
+        World.__news.append({
+            "publisher": "Independent News",
+            "articles": articles
+        })
 
     def aggregator(self):
         if self.url == 'https://www.independent.co.uk/news/world':
@@ -73,5 +75,11 @@ class World:
 
     @property
     def news(self):
-        return World.__news
+        data = {
+            "category": "World",
+            "category_id": 6,
+            "news": World.__news,
+        }
+        return data
+
 

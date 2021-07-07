@@ -1,13 +1,9 @@
 class Tech:
-    __news = {
-        "category": "Technology",
-        "category_id": 4,
-        "publisher": 'Techcrunch',
-    }
+    __news = []
 
-    def __init__(self, response, url):
+    def __init__(self, response):
         self.response = response
-        self.url = url
+        self.url = response.url
         self.aggregator()
 
     def techcrunch_news(self):
@@ -29,6 +25,8 @@ class Tech:
             articles.append({
                 "title": title.strip() if title is not None else None,
                 "subTitle": subtitle.strip() if subtitle is not None else subtitle,
+                "source": "Techcrunch",
+                "Genre": None,
                 "followUpLink": container.css(
                     "header.post-block__header h2.post-block__title a.post-block__title__link::attr(href)").get(),
                 "published": {
@@ -39,7 +37,10 @@ class Tech:
                 "image": container.css("footer.post-block__footer img::attr(src)").get()
             })
 
-        Tech.__news["articles"] = articles
+        Tech.__news.append({
+            "publisher": "Techcrunch",
+            "articles": articles
+        })
 
     def verge_news(self):
         containers = self.response.css(".c-entry-box--compact--article")
@@ -61,17 +62,18 @@ class Tech:
                 "title": title.strip() if title is not None else None,
                 "followUpLink": container.css(".c-entry-box--compact__title a::attr(href)").get(),
                 "image": image,
-                "publisher": "The Verge",
+                'Genre': None,
+                "source": "The Verge",
                 "published": {
                     "timestamp": container.css(".c-byline .c-byline__item time::attr(datetime)").get(),
                     "date": None
                 }
             })
 
-        if "more_articles" in Tech.__news.keys():
-            [Tech.__news["more_articles"].append(v) for v in articles]
-        else:
-            Tech.__news["more_articles"] = articles
+        Tech.__news.append({
+            "publisher": "The Verge",
+            "articles": articles
+        })
 
     def gamespot_news(self):
         containers = self.response.css(".medium-span7 .card-item")
@@ -94,16 +96,17 @@ class Tech:
                 "title": title.strip() if title is not None else None,
                 "followUpLink": link if link[0] != "/" else "{}{}".format(self.url, link),
                 "image": image,
-                "publisher": "Game Spot",
+                "source": "Game Spot",
+                'Genre': None,
                 "published": {
                     "timestamp": None,
                     "date": None
                 }
             })
-        if "more_articles" in Tech.__news.keys():
-            [Tech.__news["more_articles"].append(v) for v in articles]
-        else:
-            Tech.__news["more_articles"] = articles
+        Tech.__news.append({
+            "publisher": "Game Spot",
+            "articles": articles
+        })
 
     def aggregator(self):
         if self.url == 'https://www.theverge.com':
@@ -115,5 +118,10 @@ class Tech:
 
     @property
     def news(self):
-        return Tech.__news
+        data = {
+            "category": "Technology",
+            "category_id": 4,
+            "news": Tech.__news,
+        }
+        return data
 

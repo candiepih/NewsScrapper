@@ -1,14 +1,10 @@
 class Entertainment:
-    __news = {
-        "category": "Entertainment",
-        "publisher": 'Ew',
-        "category_id": 2,
-    }
+    __news = []
 
-    def __init__(self, response, url):
+    def __init__(self, response, videos_list):
         self.response = response
-        self.url = url
-        self.aggregator()
+        self.url = response.url
+        self.aggregator(videos_list)
 
     def ew_news(self):
         containers = self.response.css(".category-page-item")
@@ -47,11 +43,14 @@ class Entertainment:
                     ".category-page-item-timestamp::text").get(),
             })
 
-        self.__news["articles"] = all_articles
+        Entertainment.__news.append({
+            "publisher": "EW",
+            "articles": all_articles
+        })
 
-    def imdb_trailers(self):
+    def imdb_trailers(self, videos_list):
         containers = self.response.css(".ipc-poster-card")
-        articles = []
+        videos = []
         previous_titles = []
         for container in containers:
             title = container.css("a.ipc-poster-card__title::text").get()
@@ -63,7 +62,7 @@ class Entertainment:
             else:
                 previous_titles.append(title)
 
-            articles.append({
+            videos.append({
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "followUpLink": "https://www.imdb.com{}".format(url),
@@ -71,17 +70,123 @@ class Entertainment:
                 "publisher": "Imdb",
                 "published": None,
             })
-        self.__news["videos"] = articles
 
-    def aggregator(self):
+        videos_list.append({
+            "publisher": "Imdb",
+            "videos": videos
+        })
+
+    def mpasho(self):
+        containers = self.response.css(".col-md-12")
+        articles = []
+        previous_titles = []
+
+        for container in containers:
+            title = container.css(".article-title::text").get()
+            link = container.css(".article-body a::attr(href)").get()
+            image = container.css(".image span::attr(data-background-image)").get()
+            if title in previous_titles or title is None:
+                continue
+            else:
+                previous_titles.append(title)
+            link = "https://mpasho.co.ke" + link
+            articles.append({
+                "title": title.strip() if title is not None else None,
+                "image": image,
+                "source": "Mpasho",
+                "Genre": container.css(".article-section a::text").get(),
+                "followUpLink": link,
+                "published": {
+                    "timestamp": None,
+                    "date": container.css(".article-pub-date::text").get()
+                }
+            })
+        Entertainment.__news.append({
+            "publisher": "Mpasho",
+            "articles": articles
+        })
+
+    def ghafla(self):
+        parent = self.response.css(".col-md-9")
+        containers = parent.css("article")
+        articles = []
+        previous_titles = []
+
+        for container in containers:
+            title = container.css(".omega h3 a::text").get()
+            link = container.css(".omega h3 a::attr(href)").get()
+            image = container.css(".alpha img::attr(src)").get()
+            if title in previous_titles or title is None:
+                continue
+            else:
+                previous_titles.append(title)
+            articles.append({
+                "title": title.strip() if title is not None else None,
+                "image": image,
+                "source": "Ghafla",
+                "Genre": None,
+                "followUpLink": link,
+                "published": {
+                    "timestamp": None,
+                    "date": container.css(".blog-date a::text").get()
+                }
+            })
+        Entertainment.__news.append({
+            "publisher": "Ghafla",
+            "articles": articles
+        })
+
+    def tuko(self):
+        containers = self.response.css("article")
+        articles = []
+        previous_titles = []
+
+        for container in containers:
+            title = container.css("span::text").get()
+            link = container.css("a::attr(href)").get()
+            image = container.css(".thumbnail-picture__img::attr(src)").get()
+            date = container.css(".c-article-info__time--clock::text").get()
+            if title in previous_titles or title is None:
+                continue
+            else:
+                previous_titles.append(title)
+            articles.append({
+                "title": title.strip() if title is not None else None,
+                "image": image,
+                "source": "Tuko",
+                "Genre": None,
+                "followUpLink": link,
+                "published": {
+                    "timestamp": container.css(".c-article-info__time--clock::attr(datetime)").get(),
+                    "date": date.strip() if date is not None else date
+                }
+            })
+        Entertainment.__news.append({
+            "publisher": "Tuko",
+            "articles": articles
+        })
+
+    def aggregator(self, videos_list):
         if self.url == 'https://www.imdb.com/trailers/':
-            self.imdb_trailers()
+            self.imdb_trailers(videos_list)
         elif self.url == 'https://ew.com/':
             self.ew_news()
+        elif self.url == 'https://mpasho.co.ke/entertainment/':
+            self.mpasho()
+        elif self.url == "http://www.ghafla.com/ke/tag/ghafla-entertainment-news/":
+            self.ghafla()
+        elif self.url == "https://www.tuko.co.ke/entertainment/":
+            self.tuko()
 
     @property
     def news(self):
-        return Entertainment.__news
+        data = {
+            "category": "Entertainment",
+            "category_id": 2,
+            "news": Entertainment.__news,
+        }
+        return data
+
 
 
 

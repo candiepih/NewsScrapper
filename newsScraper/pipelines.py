@@ -24,12 +24,19 @@ class NewsscraperPipeline:
             self.fashionCollection = self.db["lifestyle"]
             self.worldCollection = self.db["world"]
 
+            self.topBuzzCollection = self.db["top_buzz"]
+            self.eastAfricaCollection = self.db["east_africa"]
+            self.politicsCollection = self.db["politics"]
+            self.countiesCollection = self.db["counties"]
+            self.educationCollection = self.db["education"]
+            self.videosCollection = self.db["videos"]
+
     @staticmethod
     def update_data(collection, item):
         query = {"category_id": item['category_id']}
-        collection.find_and_modify(query=query, update={"$set": {"articles": item["articles"]}})
-        if "more_articles" in item.keys():
-            collection.find_and_modify(query=query, update={"$set": {"more_articles": item["more_articles"]}})
+        # collection.find_and_modify(query=query, update={"$set": {"articles": item["articles"]}})
+        if "news" in item.keys():
+            collection.find_and_modify(query=query, update={"$set": {"news": item["news"]}})
         if "videos" in item.keys():
             collection.find_and_modify(query=query, update={"$set": {"videos": item["videos"]}})
 
@@ -47,5 +54,12 @@ class NewsscraperPipeline:
             self.handle_collections(self.techCollection, item, "techNews", "technology")
             self.handle_collections(self.fashionCollection, item, "lifestyleNews", "lifestyle")
             self.handle_collections(self.worldCollection, item, "worldNews", "world")
+
+            self.handle_collections(self.topBuzzCollection, item, "topBuzzNews", "top_buzz")
+            self.handle_collections(self.eastAfricaCollection, item, "eastAfricaNews", "east_africa")
+            self.handle_collections(self.politicsCollection, item, "politicsNews", "politics")
+            self.handle_collections(self.countiesCollection, item, "countiesNews", "counties")
+            self.handle_collections(self.educationCollection, item, "educationNews", "education")
+            self.handle_collections(self.videosCollection, item, "videos", "videos")
 
         return item
