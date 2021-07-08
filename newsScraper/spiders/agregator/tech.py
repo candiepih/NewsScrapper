@@ -26,7 +26,7 @@ class Tech:
                 "title": title.strip() if title is not None else None,
                 "subTitle": subtitle.strip() if subtitle is not None else subtitle,
                 "source": "Techcrunch",
-                "Genre": None,
+                "genre": None,
                 "followUpLink": container.css(
                     "header.post-block__header h2.post-block__title a.post-block__title__link::attr(href)").get(),
                 "published": {
@@ -62,7 +62,7 @@ class Tech:
                 "title": title.strip() if title is not None else None,
                 "followUpLink": container.css(".c-entry-box--compact__title a::attr(href)").get(),
                 "image": image,
-                'Genre': None,
+                'genre': None,
                 "source": "The Verge",
                 "published": {
                     "timestamp": container.css(".c-byline .c-byline__item time::attr(datetime)").get(),
@@ -97,7 +97,7 @@ class Tech:
                 "followUpLink": link if link[0] != "/" else "{}{}".format(self.url, link),
                 "image": image,
                 "source": "Game Spot",
-                'Genre': None,
+                'genre': None,
                 "published": {
                     "timestamp": None,
                     "date": None

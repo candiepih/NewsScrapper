@@ -26,7 +26,7 @@ class Politics:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Standard Media",
-                "Genre": None,
+                "genre": None,
                 "followUpLink": link,
                 "published": {
                     "timestamp": None,
@@ -55,7 +55,7 @@ class Politics:
             "title": title.strip() if title is not None else None,
             "image": "https://nation.africa" + image,
             "source": "Nation Africa",
-            "Genre": filtered_container[0].css(".article-topic::text").get(),
+            "genre": filtered_container[0].css(".article-topic::text").get(),
             "followUpLink": "https://nation.africa" + url,
             "published": {
                 "timestamp": None,
@@ -77,7 +77,7 @@ class Politics:
                     "title": title.strip() if title is not None else None,
                     "image": None,
                     "source": "Nation Africa",
-                    "Genre": container.css(".article-topic::text").get(),
+                    "genre": container.css(".article-topic::text").get(),
                     "followUpLink": "https://nation.africa/kenya" + link,
                     "published": {
                         "timestamp": None,

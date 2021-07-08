@@ -11,7 +11,6 @@ from .agregator.lifestyle import Lifestyle
 from .agregator.business import Business
 from .agregator.topbuzz import TopBuzz
 from .agregator.eastafrica import EastAfrica
-from .agregator.videos import Videos
 
 
 class BusinessspiderSpider(scrapy.Spider):

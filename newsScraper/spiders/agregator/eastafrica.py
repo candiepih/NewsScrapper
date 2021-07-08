@@ -34,7 +34,7 @@ class EastAfrica:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "The EastAfrican",
-                "Genre": None,
+                "genre": None,
                 "followUpLink": link,
                 "published": {
                     "timestamp": None,

@@ -25,7 +25,7 @@ class TopBuzz:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Kenyans",
-                "Genre": container.css(".news-secondary a::text").get(),
+                "genre": container.css(".news-secondary a::text").get(),
                 "followUpLink": link,
                 "published": {
                     "timestamp": None,
@@ -34,7 +34,7 @@ class TopBuzz:
             })
 
         TopBuzz.__news.append({
-            "publisher": "Standard Media",
+            "publisher": "Kenyans",
             "articles": articles
         })
 
@@ -57,7 +57,7 @@ class TopBuzz:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Tuko",
-                "Genre": None,
+                "genre": None,
                 "followUpLink": link,
                 "published": {
                     "timestamp": container.css(".c-article-info__time--clock::attr(datetime)").get(),

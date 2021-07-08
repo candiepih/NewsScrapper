@@ -28,6 +28,8 @@ class Business:
                 "subTitle": subtitle.strip() if subtitle is not None else None,
                 "image": container.css("div.imageBlock picture source::attr(data-original)").get(),
                 "followUpLink": container.css("div.gradient-overlay a::attr(href)").get(),
+                "genre": None,
+                "source": "Business Insider",
                 "published": {
                     "timestamp": None,
                     "date": None,
@@ -65,7 +67,7 @@ class Business:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Business Daily",
-                "Genre": container.css(".article-list-small-title span::text").get(),
+                "genre": container.css(".article-list-small-title span::text").get(),
                 "followUpLink": link,
                 "published": {
                     "timestamp": None,
@@ -100,7 +102,7 @@ class Business:
                 "image": image,
                 "followUpLink": link,
                 "source": "Kenyan Wall Street",
-                "Genre": container.css(".jeg_post_category a::text").get(),
+                "genre": container.css(".jeg_post_category a::text").get(),
                 "published": {
                     "timestamp": None,
                     "date": date.strip() if date is not None else date,

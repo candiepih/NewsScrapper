@@ -15,6 +15,8 @@ class Lifestyle:
             "title": top_banner.css("a.headlink::text").get(),
             "followUpLink": top_banner.css("a.headlink::attr(href)").get(),
             "image": top_banner.css(".preview__image::attr(background-image)").get(),
+            "source": "Forbes",
+            "genre": None,
             "published": {
                 "timestamp": None,
                 "date": None
@@ -38,6 +40,8 @@ class Lifestyle:
                 "title": title.strip() if title is not None else None,
                 "followUpLink": bottom_article.css(".stream-item__title").css("a::attr(href)").get(),
                 "image": image if image is not None else image2,
+                "source": "Forbes",
+                "genre": None,
                 "published": {
                     "timestamp": bottom_article.css(".stream-item__date::attr(data-date)").get(),
                     "date": None
@@ -67,7 +71,7 @@ class Lifestyle:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Mpasho",
-                "Genre": container.css(".article-section a::text").get(),
+                "genre": container.css(".article-section a::text").get(),
                 "followUpLink": link,
                 "published": {
                     "timestamp": None,

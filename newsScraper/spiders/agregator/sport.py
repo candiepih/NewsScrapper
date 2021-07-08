@@ -28,7 +28,8 @@ class Sport:
             articles.append({
                 "title": title.strip() if title is not None else None,
                 "image": container.css(".sdc-site-tile__image-wrap source img::attr(src)").get(),
-                "category": category.strip() if category is not None else None,
+                "genre": category.strip() if category is not None else None,
+                "source": "Sky sports",
                 "followUpLink": self.response.url + link[1:] if link[0][:1] == "/" else link
             })
         container = self.response.css("ul.sdc-site-carousel__rail")
@@ -46,7 +47,7 @@ class Sport:
                     "title": title.strip() if title is not None else None,
                     "image": image.css("img::attr(src)").get(),
                     "source": "Sky sports",
-                    "category": None,
+                    "genre": None,
                     "followUpLink": self.response.url + link[1:] if link[0][:1] == "/" else link
             })
 
@@ -81,7 +82,7 @@ class Sport:
                     "title": title.strip() if title is not None else None,
                     "image": image,
                     "source": "BT Sport",
-                    "category": None,
+                    "genre": None,
                     "followUpLink": link
             })
         videos_list.append({
@@ -110,8 +111,7 @@ class Sport:
                 "title": title.strip(),
                 "image": image.strip("'"),
                 "source": "Soccer Highlights",
-                "Genre": Genre,
-                "category": None,
+                "genre": Genre,
                 "followUpLink": url,
                 "published": {
                     "timestamp": None,
@@ -142,8 +142,7 @@ class Sport:
                 "title": title.strip(),
                 "image": image.strip("'"),
                 "source": "mchezo_africa",
-                "Genre": None,
-                "category": None,
+                "genre": None,
                 "followUpLink": 'https://www.michezoafrika.com' + url,
                 "published": {
                     "timestamp": None,
@@ -175,8 +174,7 @@ class Sport:
                 "title": title.strip(),
                 "image": image.strip("'"),
                 "source": "The Star",
-                "Genre": None,
-                "category": None,
+                "genre": None,
                 "followUpLink": 'https://www.the-star.co.ke' + url,
                 "published": {
                     "timestamp": None,

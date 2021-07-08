@@ -22,9 +22,13 @@ class Entertainment:
             all_articles.append({
                 "title": title.strip() if title is not None else None,
                 "image": topContainer.css(".entityTout__image div.lazy-image::attr(data-src)").get(),
-                "category": None,
+                "genre": None,
+                "source": "EW",
                 "followUpLink": topContainer.css("a.entityTout__link::attr(href)").get(),
-                "published": None,
+                "published": {
+                    "timestamp": None,
+                    "date": None
+                }
             })
 
         for container in containers:
@@ -37,10 +41,14 @@ class Entertainment:
             all_articles.append({
                 "title": title.strip() if title is not None else None,
                 "image": container.css(".category-page-item-image div.lazy-image::attr(data-src)").get(),
-                "category": container.css(".category-page-item-content-wrapper").css(".categoryPageItemInfo").css(".category-page-item-category-label::text").get(),
+                "genre": container.css(".category-page-item-content-wrapper").css(".categoryPageItemInfo").css(".category-page-item-category-label::text").get(),
                 "followUpLink": container.css(".category-page-item-content-wrapper a::attr(href)").get(),
-                "published": container.css(".category-page-item-content-wrapper").css(".categoryPageItemInfo").css(
-                    ".category-page-item-timestamp::text").get(),
+                "source": "EW",
+                "published": {
+                    "timestamp": container.css(".category-page-item-content-wrapper").css(".categoryPageItemInfo").css(
+                        ".category-page-item-timestamp::text").get(),
+                    "date": None
+                }
             })
 
         Entertainment.__news.append({
@@ -66,9 +74,12 @@ class Entertainment:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "followUpLink": "https://www.imdb.com{}".format(url),
-                "Genre": container.css(".ipc-poster-card__top::text").get(),
-                "publisher": "Imdb",
-                "published": None,
+                "genre": container.css(".ipc-poster-card__top::text").get(),
+                "source": "Imdb",
+                "published": {
+                    "timestamp": None,
+                    "date": None
+                }
             })
 
         videos_list.append({
@@ -94,7 +105,7 @@ class Entertainment:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Mpasho",
-                "Genre": container.css(".article-section a::text").get(),
+                "genre": container.css(".article-section a::text").get(),
                 "followUpLink": link,
                 "published": {
                     "timestamp": None,
@@ -124,7 +135,7 @@ class Entertainment:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Ghafla",
-                "Genre": None,
+                "genre": None,
                 "followUpLink": link,
                 "published": {
                     "timestamp": None,
@@ -154,7 +165,7 @@ class Entertainment:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Tuko",
-                "Genre": None,
+                "genre": None,
                 "followUpLink": link,
                 "published": {
                     "timestamp": container.css(".c-article-info__time--clock::attr(datetime)").get(),

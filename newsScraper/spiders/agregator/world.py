@@ -24,13 +24,14 @@ class World:
                 "followUpLink": url,
                 "image": container.css(".image-wrap amp-img::attr(src)").get(),
                 "genre": container.css(".capsule::text").get(),
+                "source": 'Independent',
                 "published": {
                     "timestamp": None,
                     "time": None
                 },
             })
         World.__news.append({
-            "publisher": "Independent News",
+            "publisher": "Independent",
             "articles": articles
         })
 
@@ -55,15 +56,15 @@ class World:
                 "title": title.strip() if title is not None else None,
                 "followUpLink": "https://www.foxnews.com" + url,
                 "image": image,
-                "Genre": container.css(".eyebrow a::text").get(),
-                "publisher": 'Fox news',
+                "genre": container.css(".eyebrow a::text").get(),
+                "source": 'Fox News',
                 "published": {
                     "timestamp": None,
                     "time": None
                 },
             })
         World.__news.append({
-            "publisher": "Independent News",
+            "publisher": "Fox News",
             "articles": articles
         })
 

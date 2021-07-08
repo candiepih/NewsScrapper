@@ -26,7 +26,7 @@ class Education:
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Standard Media",
-                "Genre": None,
+                "genre": None,
                 "followUpLink": link,
                 "published": {
                     "timestamp": None,
