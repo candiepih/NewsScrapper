@@ -16,6 +16,7 @@ class Counties:
             minor_containers = container.css("li")
             for m_container in minor_containers:
                 title = m_container.css(".teaser-image-large_title::text").get()
+                title = title.strip() if title is not None else None
                 if title in previous_titles or title is None:
                     continue
                 else:
@@ -25,7 +26,7 @@ class Counties:
                 date = m_container.css(".date::text").get()
                 image = m_container.css("figure img::attr(data-src)").get()
                 articles.append({
-                        "title": title.strip() if title is not None else None,
+                        "title": title,
                         "image": "https://nation.africa" + image,
                         "source": "Nation Africa",
                         "county": county_name,

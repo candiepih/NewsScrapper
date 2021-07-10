@@ -84,7 +84,7 @@ class Entertainment:
 
         videos_list.append({
             "publisher": "Imdb",
-            "videos": videos
+            "articles": videos
         })
 
     def mpasho(self):

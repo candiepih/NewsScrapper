@@ -27,7 +27,7 @@ class World:
                 "source": 'Independent',
                 "published": {
                     "timestamp": None,
-                    "time": None
+                    "date": None
                 },
             })
         World.__news.append({
@@ -60,7 +60,7 @@ class World:
                 "source": 'Fox News',
                 "published": {
                     "timestamp": None,
-                    "time": None
+                    "date": None
                 },
             })
         World.__news.append({

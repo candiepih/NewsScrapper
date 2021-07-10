@@ -37,8 +37,8 @@ class NewsscraperPipeline:
         # collection.find_and_modify(query=query, update={"$set": {"articles": item["articles"]}})
         if "news" in item.keys():
             collection.find_and_modify(query=query, update={"$set": {"news": item["news"]}})
-        if "videos" in item.keys():
-            collection.find_and_modify(query=query, update={"$set": {"videos": item["videos"]}})
+        # if "videos" in item.keys():
+        #     collection.find_and_modify(query=query, update={"$set": {"videos": item["videos"]}})
 
     def handle_collections(self, collection, item, item_name, category):
         if category not in self.db.list_collection_names():

@@ -30,7 +30,11 @@ class Sport:
                 "image": container.css(".sdc-site-tile__image-wrap source img::attr(src)").get(),
                 "genre": category.strip() if category is not None else None,
                 "source": "Sky sports",
-                "followUpLink": self.response.url + link[1:] if link[0][:1] == "/" else link
+                "followUpLink": self.response.url + link[1:] if link[0][:1] == "/" else link,
+                "published": {
+                    "timestamp": None,
+                    "date": None
+                }
             })
         container = self.response.css("ul.sdc-site-carousel__rail")
         containers = container.css(".sdc-site-carousel__rail-item")
@@ -48,7 +52,11 @@ class Sport:
                     "image": image.css("img::attr(src)").get(),
                     "source": "Sky sports",
                     "genre": None,
-                    "followUpLink": self.response.url + link[1:] if link[0][:1] == "/" else link
+                    "followUpLink": self.response.url + link[1:] if link[0][:1] == "/" else link,
+                    "published": {
+                        "timestamp": None,
+                        "date": None
+                    }
             })
 
         Sport.__news.append({
@@ -57,7 +65,7 @@ class Sport:
         })
         videos_list.append({
             "publisher": "Sky Sports",
-            "videos": videos
+            "articles": videos
         })
 
     def bt_news(self, videos_list):
@@ -83,11 +91,15 @@ class Sport:
                     "image": image,
                     "source": "BT Sport",
                     "genre": None,
-                    "followUpLink": link
+                    "followUpLink": link,
+                    "published": {
+                        "timestamp": None,
+                        "date": None
+                    }
             })
         videos_list.append({
             "publisher": "Bt News",
-            "videos": videos
+            "articles": videos
         })
 
     def soccer_highlights(self, videos_list):
@@ -120,39 +132,7 @@ class Sport:
             })
         videos_list.append({
             "publisher": "Soccer Highlights",
-            "videos": videos
-        })
-
-    def mchezo_africa(self):
-        containers = self.response.css(".article-list-1 ul li")
-        articles = []
-        previous_titles = []
-
-        for container in containers:
-            title = container.css(".entry-title a::text").get()
-            image = container.css(".entry-thumb img::attr(src)").get()
-            url = container.css(".entry-title a::attr(href)").get()
-
-            if title in previous_titles or title is None or image is None or url is None:
-                continue
-            else:
-                previous_titles.append(title)
-
-            articles.append({
-                "title": title.strip(),
-                "image": image.strip("'"),
-                "source": "mchezo_africa",
-                "genre": None,
-                "followUpLink": 'https://www.michezoafrika.com' + url,
-                "published": {
-                    "timestamp": None,
-                    "date": None
-                }
-            })
-
-        Sport.__news.append({
-            "publisher": "Mchezo Afrika",
-            "articles": articles
+            "articles": videos
         })
 
     def the_star(self):
@@ -194,8 +174,6 @@ class Sport:
             self.bt_news(videos_list)
         elif self.url == "https://www.soccerhighlights.net/":
             self.soccer_highlights(videos_list)
-        elif self.url == "https://www.michezoafrika.com/news/list":
-            self.mchezo_africa()
         elif self.url == "https://www.the-star.co.ke/sports/":
             self.the_star()
 

@@ -28,7 +28,6 @@ class BusinessspiderSpider(scrapy.Spider):
         'theverge.com',
         'gamespot.com',
         'soccerhighlights.net',
-        'michezoafrika.com'
         'the-star.co.ke',
         'standardmedia.co.ke',
         'nation.africa',
@@ -54,7 +53,6 @@ class BusinessspiderSpider(scrapy.Spider):
         'https://www.theverge.com',
         'https://www.gamespot.com',
         'https://www.soccerhighlights.net/',
-        'https://www.michezoafrika.com/news/list',
         'https://www.the-star.co.ke/sports/',
         'https://www.standardmedia.co.ke/category/3/politics',
         'https://nation.africa/kenya/news/politics',
@@ -83,7 +81,6 @@ class BusinessspiderSpider(scrapy.Spider):
         'https://www.skysports.com/',
         'https://www.bt.com/sport/football/videos',
         'https://www.soccerhighlights.net/',
-        'https://www.michezoafrika.com/news/list',
         'https://www.the-star.co.ke/sports/'
     ]
     entertainment_urls = [
@@ -120,7 +117,7 @@ class BusinessspiderSpider(scrapy.Spider):
     videos_dict = {
         "category": "Videos",
         "category_id": 9,
-        "videos": [],
+        "news": [],
     }
     count_urls = 0
     expected_urls = (len(start_urls) - 1)
@@ -141,11 +138,11 @@ class BusinessspiderSpider(scrapy.Spider):
             BusinessspiderSpider.items["businessNews"] = business.news
             self.count_urls += 1
         elif response.url in self.entertainment_urls:
-            entertainment = Entertainment(response, self.videos_dict["videos"])
+            entertainment = Entertainment(response, self.videos_dict["news"])
             BusinessspiderSpider.items["entertainmentNews"] = entertainment.news
             self.count_urls += 1
         elif response.url in self.sport_urls:
-            sport = Sport(response, self.videos_dict["videos"])
+            sport = Sport(response, self.videos_dict["news"])
             BusinessspiderSpider.items["sportNews"] = sport.news
             self.count_urls += 1
         elif response.url in self.tech_urls:
