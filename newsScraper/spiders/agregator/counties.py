@@ -17,6 +17,7 @@ class Counties:
             for m_container in minor_containers:
                 title = m_container.css(".teaser-image-large_title::text").get()
                 title = title.strip() if title is not None else None
+                title = title if title else None
                 if title in previous_titles or title is None:
                     continue
                 else:

@@ -51,21 +51,27 @@ class Politics:
         image = filtered_container[0].css("section a.teaser-image-large figure img::attr(data-src)").get()
         url = filtered_container[0].css("section a.teaser-image-large::attr(href)").get()
         date = filtered_container[0].css(".date::text").get()
-        articles.append({
-            "title": title.strip() if title is not None else None,
-            "image": "https://nation.africa" + image,
-            "source": "Nation Africa",
-            "genre": filtered_container[0].css(".article-topic::text").get(),
-            "followUpLink": "https://nation.africa" + url,
-            "published": {
-                "timestamp": None,
-                "date": date.strip() if date is not None else None,
-            }
-        })
+        title = title.strip() if title is not None else None
+        title = title if title else None
+        if title not in previous_titles and title:
+            previous_titles.append(title)
+            articles.append({
+                "title": title,
+                "image": "https://nation.africa" + image,
+                "source": "Nation Africa",
+                "genre": filtered_container[0].css(".article-topic::text").get(),
+                "followUpLink": "https://nation.africa" + url,
+                "published": {
+                    "timestamp": None,
+                    "date": date.strip() if date is not None else None,
+                }
+            })
 
         # Handle other articles
         for container in containers:
             title = container.css(".title-extra-small::text").get()
+            title = title.strip() if title is not None else None
+            title = title if title else None
             if title in previous_titles or title is None:
                 continue
             else:
@@ -73,8 +79,9 @@ class Politics:
 
             link = container.css("a::attr(href)").get()
             date = container.css(".date::text").get()
+
             articles.append({
-                    "title": title.strip() if title is not None else None,
+                    "title": title,
                     "image": None,
                     "source": "Nation Africa",
                     "genre": container.css(".article-topic::text").get(),
