@@ -22,19 +22,21 @@ class Tech:
             else:
                 previous_titles.append(title)
 
+            link = container.css("header.post-block__header h2.post-block__title a.post-block__title__link::attr(href)").get()
+            timestamp = container.css(
+                        "header.post-block__header div.post-block__meta time::attr(datetime)").get()
+            image = container.css("footer.post-block__footer img::attr(src)").get()
             articles.append({
                 "title": title.strip() if title is not None else None,
                 "subTitle": subtitle.strip() if subtitle is not None else subtitle,
                 "source": "Techcrunch",
                 "genre": None,
-                "followUpLink": container.css(
-                    "header.post-block__header h2.post-block__title a.post-block__title__link::attr(href)").get(),
+                "followUpLink": link,
+                "image": image,
                 "published": {
-                    "timestamp": container.css(
-                        "header.post-block__header div.post-block__meta time::attr(datetime)").get(),
+                    "timestamp": timestamp,
                     "date": date.strip() if date is not None else date
                 },
-                "image": container.css("footer.post-block__footer img::attr(src)").get()
             })
 
         Tech.__news.append({
