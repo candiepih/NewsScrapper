@@ -101,11 +101,13 @@ class Entertainment:
             else:
                 previous_titles.append(title)
             link = "https://mpasho.co.ke" + link
+            genre = container.css(".article-section a::text").get()
+            genre = genre.replace("· ", "") if genre is not None else None
             articles.append({
                 "title": title.strip() if title is not None else None,
                 "image": image,
                 "source": "Mpasho",
-                "genre": container.css(".article-section a::text").get(),
+                "genre": genre,
                 "followUpLink": link,
                 "published": {
                     "timestamp": None,
