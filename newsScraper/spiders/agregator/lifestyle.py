@@ -10,19 +10,6 @@ class Lifestyle:
         articles = []
         previous_titles = []
 
-        top_banner = self.response.css('.card--large')
-        articles.append({
-            "title": top_banner.css("a.headlink::text").get(),
-            "followUpLink": top_banner.css("a.headlink::attr(href)").get(),
-            "image": top_banner.css(".preview__image::attr(background-image)").get(),
-            "source": "Forbes",
-            "genre": None,
-            "published": {
-                "timestamp": None,
-                "date": None
-            }
-        })
-
         bottom_articles = self.response.css('.et-promoblock-star-item')
         for bottom_article in bottom_articles:
             title = bottom_article.css(".stream-item__title").css("a::text").get()
