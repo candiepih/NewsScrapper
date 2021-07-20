@@ -88,7 +88,7 @@ class Business:
         for container in containers:
             title = container.css(".jeg_post_title a::text").get()
             link = container.css(".jeg_post_title a::attr(href)").get()
-            image = container.css("img::attr(src)").get()
+            image = container.css("img::attr(data-src)").get()
             date = container.css(".jeg_meta_date a::text").get()
 
             new_title = title.strip() if title is not None else None

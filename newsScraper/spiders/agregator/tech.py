@@ -6,44 +6,6 @@ class Tech:
         self.url = response.url
         self.aggregator()
 
-    def techcrunch_news(self):
-        containers = self.response.css(".post-block--unread")
-        articles = []
-        previous_titles = []
-
-        for container in containers:
-            date = container.css("header.post-block__header div.post-block__meta time::text").get()
-            title = container.css(
-                "header.post-block__header h2.post-block__title a.post-block__title__link::text").get()
-            subtitle = container.css(".post-block__content::text").get()
-
-            if title in previous_titles:
-                continue
-            else:
-                previous_titles.append(title)
-
-            link = container.css("header.post-block__header h2.post-block__title a.post-block__title__link::attr(href)").get()
-            timestamp = container.css(
-                        "header.post-block__header div.post-block__meta time::attr(datetime)").get()
-            image = container.css("footer.post-block__footer img::attr(src)").get()
-            articles.append({
-                "title": title.strip() if title is not None else None,
-                "subTitle": subtitle.strip() if subtitle is not None else subtitle,
-                "source": "Techcrunch",
-                "genre": None,
-                "followUpLink": link,
-                "image": image,
-                "published": {
-                    "timestamp": timestamp,
-                    "date": date.strip() if date is not None else date
-                },
-            })
-
-        Tech.__news.append({
-            "publisher": "Techcrunch",
-            "articles": articles
-        })
-
     def verge_news(self):
         containers = self.response.css(".c-entry-box--compact--article")
         articles = []
@@ -113,8 +75,6 @@ class Tech:
     def aggregator(self):
         if self.url == 'https://www.theverge.com':
             self.verge_news()
-        elif self.url == 'https://techcrunch.com/':
-            self.techcrunch_news()
         elif self.url == 'https://www.gamespot.com':
             self.gamespot_news()
 

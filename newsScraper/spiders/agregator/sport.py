@@ -68,40 +68,6 @@ class Sport:
             "articles": videos
         })
 
-    def bt_news(self, videos_list):
-        containers = self.response.css(".col-xs-6")
-        videos = []
-        previous_titles = []
-
-        for container in containers:
-            title = container.css(".content").css(".content-title p").css("a::text").get()
-            if title in previous_titles or title is None:
-                continue
-            else:
-                previous_titles.append(title)
-
-            lock = container.css(".image-container").css(".tile-icons img.lock-icon::attr(src)").get()
-            if lock is not None:
-                continue
-            link = container.css(".content").css(".content-title p").css("a::attr(href)").get()
-            image = container.css(".image-container v-lazy-image::attr(src)").get()
-
-            videos.append({
-                    "title": title.strip() if title is not None else None,
-                    "image": image,
-                    "source": "BT Sport",
-                    "genre": None,
-                    "followUpLink": link,
-                    "published": {
-                        "timestamp": None,
-                        "date": None
-                    }
-            })
-        videos_list.append({
-            "publisher": "Bt News",
-            "articles": videos
-        })
-
     def soccer_highlights(self, videos_list):
         parent = self.response.css("div.td-pb-span8")
         containers = parent.css(".td_module_wrap")
@@ -170,8 +136,6 @@ class Sport:
     def aggregator(self, videos_list):
         if self.url == 'https://www.skysports.com/':
             self.sky_news(videos_list)
-        elif self.url == 'https://www.bt.com/sport/football/videos':
-            self.bt_news(videos_list)
         elif self.url == "https://www.soccerhighlights.net/":
             self.soccer_highlights(videos_list)
         elif self.url == "https://www.the-star.co.ke/sports/":
