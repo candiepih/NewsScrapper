@@ -105,7 +105,7 @@ class Entertainment:
             genre = genre.replace("· ", "") if genre is not None else None
             articles.append({
                 "title": title.strip() if title is not None else None,
-                "image": image,
+                "image": "https:{}".format(image),
                 "source": "Mpasho",
                 "genre": genre,
                 "followUpLink": link,

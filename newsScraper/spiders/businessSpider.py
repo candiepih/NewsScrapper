@@ -118,15 +118,6 @@ class BusinessspiderSpider(scrapy.Spider):
     news_containers = {}
     items: NewsscraperItem = NewsscraperItem()
 
-    @staticmethod
-    def organise_data(category_id, category_name, news_data):
-        data = {
-            "category": category_name,
-            "category_id": category_id,
-            "news": news_data,
-        }
-        return data
-
     def parse(self, response):
         if response.url in self.business_urls:
             business = Business(response)

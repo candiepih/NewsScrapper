@@ -118,7 +118,7 @@ class Sport:
 
             articles.append({
                 "title": title.strip(),
-                "image": image.strip("'"),
+                "image": "https:{}".format(image.strip("'")),
                 "source": "The Star",
                 "genre": None,
                 "followUpLink": 'https://www.the-star.co.ke' + url,
