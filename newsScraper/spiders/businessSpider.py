@@ -30,7 +30,7 @@ class BusinessspiderSpider(scrapy.Spider):
         'standardmedia.co.ke',
         'nation.africa',
         'mpasho.co.ke',
-        'ghafla.com',
+        # 'ghafla.com',
         'tuko.co.ke'
         'businessdailyafrica.com',
         'kenyanwallstreet.com',
@@ -56,7 +56,7 @@ class BusinessspiderSpider(scrapy.Spider):
         'https://www.standardmedia.co.ke/category/56/education',
         'https://mpasho.co.ke/lifestyle/',
         'https://mpasho.co.ke/entertainment/',
-        'http://www.ghafla.com/ke/tag/ghafla-entertainment-news/',
+        # 'http://www.ghafla.com/ke/tag/ghafla-entertainment-news/',
         'https://www.tuko.co.ke/entertainment/',
         'https://www.businessdailyafrica.com/',
         'https://kenyanwallstreet.com/category/kenyan-news/',
@@ -81,7 +81,7 @@ class BusinessspiderSpider(scrapy.Spider):
         'https://ew.com/',
         'https://www.imdb.com/trailers/',
         'https://mpasho.co.ke/entertainment/',
-        'http://www.ghafla.com/ke/tag/ghafla-entertainment-news/',
+        # 'http://www.ghafla.com/ke/tag/ghafla-entertainment-news/',
         'https://www.tuko.co.ke/entertainment/'
     ]
     politics_urls = [

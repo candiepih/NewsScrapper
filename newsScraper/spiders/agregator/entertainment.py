@@ -119,35 +119,35 @@ class Entertainment:
             "articles": articles
         })
 
-    def ghafla(self):
-        parent = self.response.css(".col-md-9")
-        containers = parent.css("article")
-        articles = []
-        previous_titles = []
-
-        for container in containers:
-            title = container.css(".omega h3 a::text").get()
-            link = container.css(".omega h3 a::attr(href)").get()
-            image = container.css(".alpha img::attr(src)").get()
-            if title in previous_titles or title is None:
-                continue
-            else:
-                previous_titles.append(title)
-            articles.append({
-                "title": title.strip() if title is not None else None,
-                "image": image,
-                "source": "Ghafla",
-                "genre": None,
-                "followUpLink": link,
-                "published": {
-                    "timestamp": None,
-                    "date": container.css(".blog-date a::text").get()
-                }
-            })
-        Entertainment.__news.append({
-            "publisher": "Ghafla",
-            "articles": articles
-        })
+    # def ghafla(self):
+    #     parent = self.response.css(".col-md-9")
+    #     containers = parent.css("article")
+    #     articles = []
+    #     previous_titles = []
+    #
+    #     for container in containers:
+    #         title = container.css(".omega h3 a::text").get()
+    #         link = container.css(".omega h3 a::attr(href)").get()
+    #         image = container.css(".alpha img::attr(src)").get()
+    #         if title in previous_titles or title is None:
+    #             continue
+    #         else:
+    #             previous_titles.append(title)
+    #         articles.append({
+    #             "title": title.strip() if title is not None else None,
+    #             "image": image,
+    #             "source": "Ghafla",
+    #             "genre": None,
+    #             "followUpLink": link,
+    #             "published": {
+    #                 "timestamp": None,
+    #                 "date": container.css(".blog-date a::text").get()
+    #             }
+    #         })
+    #     Entertainment.__news.append({
+    #         "publisher": "Ghafla",
+    #         "articles": articles
+    #     })
 
     def tuko(self):
         containers = self.response.css("article")
@@ -186,8 +186,8 @@ class Entertainment:
             self.ew_news()
         elif self.url == 'https://mpasho.co.ke/entertainment/':
             self.mpasho()
-        elif self.url == "http://www.ghafla.com/ke/tag/ghafla-entertainment-news/":
-            self.ghafla()
+        # elif self.url == "http://www.ghafla.com/ke/tag/ghafla-entertainment-news/":
+        #     self.ghafla()
         elif self.url == "https://www.tuko.co.ke/entertainment/":
             self.tuko()
 
