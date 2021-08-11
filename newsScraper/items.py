@@ -19,4 +19,5 @@ class NewsscraperItem(scrapy.Item):
     politicsNews = scrapy.Field()
     countiesNews = scrapy.Field()
     educationNews = scrapy.Field()
+    covidNews = scrapy.Field()
     videos = scrapy.Field()

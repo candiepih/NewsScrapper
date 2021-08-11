@@ -30,6 +30,7 @@ class NewsscraperPipeline:
             self.countiesCollection = self.db["counties"]
             self.educationCollection = self.db["education"]
             self.videosCollection = self.db["videos"]
+            self.covidCollection = self.db["covid"]
 
     @staticmethod
     def update_data(collection, item):
@@ -61,5 +62,6 @@ class NewsscraperPipeline:
             self.handle_collections(self.countiesCollection, item, "countiesNews", "counties")
             self.handle_collections(self.educationCollection, item, "educationNews", "education")
             self.handle_collections(self.videosCollection, item, "videos", "videos")
+            self.handle_collections(self.covidCollection, item, "covidNews", "covid")
 
         return item

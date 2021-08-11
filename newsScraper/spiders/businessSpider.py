@@ -11,6 +11,7 @@ from .agregator.lifestyle import Lifestyle
 from .agregator.business import Business
 from .agregator.topbuzz import TopBuzz
 from .agregator.eastafrica import EastAfrica
+from .agregator.covid import Covid
 
 
 class BusinessspiderSpider(scrapy.Spider):
@@ -35,7 +36,8 @@ class BusinessspiderSpider(scrapy.Spider):
         'businessdailyafrica.com',
         'kenyanwallstreet.com',
         'kenyans.co.ke',
-        'theeastafrican.co.ke'
+        'theeastafrican.co.ke',
+        'citizentv.co.ke'
     ]
 
     start_urls = [
@@ -62,7 +64,8 @@ class BusinessspiderSpider(scrapy.Spider):
         'https://kenyanwallstreet.com/category/kenyan-news/',
         'https://www.kenyans.co.ke/news',
         'https://www.tuko.co.ke/latest/',
-        'https://www.theeastafrican.co.ke/'
+        'https://www.theeastafrican.co.ke/',
+        'https://citizentv.co.ke/'
     ]
     tech_urls = [
         'https://www.theverge.com',
@@ -152,6 +155,9 @@ class BusinessspiderSpider(scrapy.Spider):
         elif response.url == 'https://www.standardmedia.co.ke/category/56/education':
             education = Education(response)
             self.news_containers["educationNews"] = education
+        elif response.url == 'https://citizentv.co.ke/':
+            covid = Covid(response)
+            self.news_containers["covidNews"] = covid
 
         self.count_urls += 1
         if self.count_urls == self.expected_urls:
