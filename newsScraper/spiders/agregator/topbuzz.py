@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class TopBuzz:
     __news = []
 
@@ -21,16 +23,22 @@ class TopBuzz:
             link = "https://www.kenyans.co.ke" + link
             image = container.css(".news-image img::attr(data-src)").get()
             image = "https://www.kenyans.co.ke" + image if image is not None else image
+            #time
+            date_time = datetime.today()
+            #using strftime() to get the current time value
+            current_time = date_time.strftime("%I:%M %p")
+            #date now
+            date_now = date_time.strftime("%b %d, %Y")
             articles.append({
+                "source": "Kenyans",
+                "favicon": "https://www.kenyans.co.ke" + self.response.css('link[rel="shortcut icon"]::attr(href)').get(),
                 "title": title.strip() if title is not None else None,
                 "image": image,
-                "source": "Kenyans",
                 "genre": container.css(".news-secondary a::text").get(),
+                "category": 'Top Buzz',
                 "followUpLink": link,
-                "published": {
-                    "timestamp": None,
-                    "date": container.css(".backlink-date::text").get()
-                }
+                "time": current_time,
+                "date": date_now
             })
 
         TopBuzz.__news.append({
@@ -38,43 +46,41 @@ class TopBuzz:
             "articles": articles
         })
 
-    def tuko(self):
-        parent = self.response.css(".l-taxonomy-page-hero")
-        containers = parent.css("article")
-        articles = []
-        previous_titles = []
+    # def tuko(self):
+    #     parent = self.response.css(".l-taxonomy-page-hero")
+    #     containers = parent.css("article")
+    #     articles = []
+    #     previous_titles = []
 
-        for container in containers:
-            title = container.css("span::text").get()
-            link = container.css("a::attr(href)").get()
-            image = container.css(".thumbnail-picture__img::attr(src)").get()
-            date = container.css(".c-article-info__time--clock::text").get()
-            if title in previous_titles or title is None:
-                continue
-            else:
-                previous_titles.append(title)
-            articles.append({
-                "title": title.strip() if title is not None else None,
-                "image": image,
-                "source": "Tuko",
-                "genre": None,
-                "followUpLink": link,
-                "published": {
-                    "timestamp": container.css(".c-article-info__time--clock::attr(datetime)").get(),
-                    "date": date.strip() if date is not None else date
-                }
-            })
+    #     for container in containers:
+    #         title = container.css("span::text").get()
+    #         link = container.css("a::attr(href)").get()
+    #         image = container.css(".thumbnail-picture__img::attr(src)").get()
+    #         date = container.css(".c-article-info__time--clock::text").get()
+    #         if title in previous_titles or title is None:
+    #             continue
+    #         else:
+    #             previous_titles.append(title)
+    #         articles.append({
+    #             "title": title.strip() if title is not None else None,
+    #             "image": image,
+    #             "source": "Tuko",
+    #             "genre": None,
+    #             "followUpLink": link,
+    #             "published": {
+    #                 "timestamp": container.css(".c-article-info__time--clock::attr(datetime)").get(),
+    #                 "date": date.strip() if date is not None else date
+    #             }
+    #         })
 
-        TopBuzz.__news.append({
-            "publisher": "Tuko",
-            "articles": articles
-        })
+    #     TopBuzz.__news.append({
+    #         "publisher": "Tuko",
+    #         "articles": articles
+    #     })
 
     def aggregator(self):
         if self.url == "https://www.kenyans.co.ke/news":
             self.kenyans()
-        elif self.url == "https://www.tuko.co.ke/latest/":
-            self.tuko()
 
     @property
     def news(self):

@@ -8,7 +8,6 @@
 from itemadapter import ItemAdapter
 import pymongo
 
-
 class NewsscraperPipeline:
     def __init__(self):
         password = "mutheeal.am."
@@ -17,27 +16,27 @@ class NewsscraperPipeline:
         # self.client = pymongo.MongoClient("localhost", 27017)
         with self.client:
             self.db = self.client.news
-            self.businessCollection = self.db["business"]
             self.entertainmentCollection = self.db["entertainment"]
-            self.sportCollection = self.db["sport"]
+            self.sportCollection = self.db["sports"]
             self.techCollection = self.db["technology"]
-            self.fashionCollection = self.db["lifestyle"]
-            self.worldCollection = self.db["world"]
-
+            self.worldCollection = self.db["worldnews"]
             self.topBuzzCollection = self.db["top_buzz"]
-            self.eastAfricaCollection = self.db["east_africa"]
             self.politicsCollection = self.db["politics"]
-            self.countiesCollection = self.db["counties"]
-            self.educationCollection = self.db["education"]
-            self.videosCollection = self.db["videos"]
-            self.covidCollection = self.db["covid"]
 
     @staticmethod
     def update_data(collection, item):
-        query = {"category_id": item['category_id']}
+        # query = {"category_id": item['category_id']}
         # collection.find_and_modify(query=query, update={"$set": {"articles": item["articles"]}})
         if "news" in item.keys():
-            collection.find_and_modify(query=query, update={"$set": {"news": item["news"]}})
+            for allarticles in item["news"]:
+                for article in allarticles['articles']:
+                    # print(collection.count_documents({}))
+                    if collection.find({'news.articles.title': article['title']}).limit(1).count() > 0:
+                        # print("it is there")
+                        continue
+                    else:
+                        # print(article)
+                        collection.update({'category_id': item['category_id']}, {'$push': {'news.$[].articles': {'$each': [article], '$position': 0} }})
         # if "videos" in item.keys():
         #     collection.find_and_modify(query=query, update={"$set": {"videos": item["videos"]}})
 
@@ -45,23 +44,15 @@ class NewsscraperPipeline:
         if category not in self.db.list_collection_names():
             collection.insert(dict(item[item_name]))
         else:
-            self.update_data(collection, item[item_name])
+            self.update_data(collection, item[item_name]) 
 
     def process_item(self, item, spider):
         if bool(item):
-            self.handle_collections(self.businessCollection, item, "businessNews", "business")
             self.handle_collections(self.entertainmentCollection, item, "entertainmentNews", "entertainment")
-            self.handle_collections(self.sportCollection, item, "sportNews", "sport")
+            self.handle_collections(self.sportCollection, item, "sportNews", "sports")
             self.handle_collections(self.techCollection, item, "techNews", "technology")
-            self.handle_collections(self.fashionCollection, item, "lifestyleNews", "lifestyle")
-            self.handle_collections(self.worldCollection, item, "worldNews", "world")
-
+            self.handle_collections(self.worldCollection, item, "worldNews", "worldnews")
             self.handle_collections(self.topBuzzCollection, item, "topBuzzNews", "top_buzz")
-            self.handle_collections(self.eastAfricaCollection, item, "eastAfricaNews", "east_africa")
             self.handle_collections(self.politicsCollection, item, "politicsNews", "politics")
-            self.handle_collections(self.countiesCollection, item, "countiesNews", "counties")
-            self.handle_collections(self.educationCollection, item, "educationNews", "education")
-            self.handle_collections(self.videosCollection, item, "videos", "videos")
-            self.handle_collections(self.covidCollection, item, "covidNews", "covid")
 
         return item
