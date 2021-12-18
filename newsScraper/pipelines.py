@@ -10,9 +10,8 @@ import pymongo
 
 class NewsscraperPipeline:
     def __init__(self):
-        password = "mutheeal.am."
-        self.client = pymongo.MongoClient(
-                "mongodb+srv://candiepih:" + password + "@cluster0.1fcmf.mongodb.net/news?retryWrites=true&w=majority")
+        password = "Villain254."
+        self.client = pymongo.MongoClient("mongodb+srv://ExteJames:" + password + "@cluster0.gow3e.mongodb.net/UserInfo?retryWrites=true&w=majority")
         # self.client = pymongo.MongoClient("localhost", 27017)
         with self.client:
             self.db = self.client.news
