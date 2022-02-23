@@ -8,8 +8,7 @@ from rest_framework import status
 import pymongo
 from rest_framework.renderers import JSONRenderer
 
-password = "Villain254."
-client = pymongo.MongoClient("mongodb+srv://ExteJames:" + password + "@cluster0.gow3e.mongodb.net/UserInfo?retryWrites=true&w=majority")
+client = pymongo.MongoClient("localhost", 27017)
 db = client["news"]
 
 
