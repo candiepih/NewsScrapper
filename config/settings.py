@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@934hi)s2#(z+k8kx*#^o(p$8(c&s2z^f)=+lo^-bc*@zed*q*'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -88,17 +88,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'appUtils',
-        'HOST': "mongodb+srv://candiepih:mutheeal.am.@cluster0.1fcmf.mongodb.net/news?retryWrites=true&w=majority",
-        # 'PORT': 27017,
+        'HOST': "",
+        'PORT': 27017,
     }
 }
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis-11180.c238.us-central1-2.gce.cloud.redislabs.com:11180',
+        'LOCATION': '',
         'OPTIONS': {
-            'PASSWORD': 'C6Eqwn893YWnU2VOaZ3OKY8rjZ3U3i1G',
+            'PASSWORD': '',
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         },
         'KEY_PREFIX': 'newsCache'
