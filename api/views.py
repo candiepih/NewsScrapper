@@ -31,7 +31,7 @@ class NewsCategory(APIView):
 
         collections = db.list_collection_names()
         collections_msg = 'No API categories at the moment.' \
-            if not collections else ('Available categories are' + ' '.join(collections))
+            if not collections else ('Available categories are ' + ', '.join(collections))
 
         resp = data if data is not None else {'status': 404,
                                               'message': 'Category not found. {}'.format(collections_msg)}

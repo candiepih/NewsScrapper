@@ -22,7 +22,7 @@ from django.views.decorators.cache import cache_page
 # Cache time to live is 15 minutes for each view.
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/news', cache_page(1)(views.News.as_view()), name="AllNews"),
+    path('api/news/categories', cache_page(1)(views.News.as_view()), name="AllNews"),
     path('api/news/categories/<str:category>', cache_page(1)(views.NewsCategory.as_view()), name="NewsCategory"),
 ]
 
