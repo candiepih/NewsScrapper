@@ -7,6 +7,7 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from db import db
+import asyncio
 
 
 class NewsscraperPipeline:
@@ -56,19 +57,36 @@ class NewsscraperPipeline:
                                                              '$position': 0}}}
                 collection.update_one(query, operation)
 
+    @staticmethod
+    def insert_new_data(collection, item, item_name):
+        """
+        Inserts new items to the collection
+        """
+        collection.insert_one(dict(item[item_name]))
+
     def handle_collections(self, collection, item, item_name, category):
+        """
+        Handles inserting and updating collections
+        """
         if category not in db.list_collection_names():
-            collection.insert_one(dict(item[item_name]))
+            yield self.insert_new_data(collection, item, item_name)
         else:
-            self.update_data(collection, item[item_name])
+            yield self.update_data(collection, item[item_name])
+
+    async def run_tasks_main(self, item):
+        """
+        Creates async tasks to be executed in parallel
+        """
+        await asyncio.gather(
+            self.handle_collections(self.entertainmentCollection, item, "entertainmentNews", "entertainment"),
+            self.handle_collections(self.sportCollection, item, "sportNews", "sports"),
+            self.handle_collections(self.techCollection, item, "techNews", "technology"),
+            self.handle_collections(self.worldCollection, item, "worldNews", "worldnews"),
+            self.handle_collections(self.topBuzzCollection, item, "topBuzzNews", "top_buzz"),
+            self.handle_collections(self.politicsCollection, item, "politicsNews", "politics")
+        )
 
     def process_item(self, item, spider):
         if bool(item):
-            self.handle_collections(self.entertainmentCollection, item, "entertainmentNews", "entertainment")
-            self.handle_collections(self.sportCollection, item, "sportNews", "sports")
-            self.handle_collections(self.techCollection, item, "techNews", "technology")
-            self.handle_collections(self.worldCollection, item, "worldNews", "worldnews")
-            self.handle_collections(self.topBuzzCollection, item, "topBuzzNews", "top_buzz")
-            self.handle_collections(self.politicsCollection, item, "politicsNews", "politics")
-
+            asyncio.run(self.run_tasks_main(item))
         return item
