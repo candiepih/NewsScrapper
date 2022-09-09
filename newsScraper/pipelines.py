@@ -6,42 +6,61 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-import pymongo
+from db import db
+
 
 class NewsscraperPipeline:
     def __init__(self):
-        self.client = pymongo.MongoClient("localhost", 27017)
-        with self.client:
-            self.db = self.client.news
-            self.entertainmentCollection = self.db["entertainment"]
-            self.sportCollection = self.db["sports"]
-            self.techCollection = self.db["technology"]
-            self.worldCollection = self.db["worldnews"]
-            self.topBuzzCollection = self.db["top_buzz"]
-            self.politicsCollection = self.db["politics"]
+        self.entertainmentCollection = db["entertainment"]
+        self.sportCollection = db["sports"] if db["sports"] is not None else db.create_collection('sports')
+        self.techCollection = db["technology"] if db["sports"] is not None else db.create_collection('technology')
+        self.worldCollection = db["worldnews"] if db["sports"] is not None else db.create_collection('worldnews')
+        self.topBuzzCollection = db["top_buzz"] if db["sports"] is not None else db.create_collection('top_buzz')
+        self.politicsCollection = db["politics"] if db["sports"] is not None else db.create_collection('politics')
+        self.existing_titles = self.retrieve_existing_title()
 
-    @staticmethod
-    def update_data(collection, item):
-        # query = {"category_id": item['category_id']}
-        # collection.find_and_modify(query=query, update={"$set": {"articles": item["articles"]}})
-        if "news" in item.keys():
-            for allarticles in item["news"]:
-                for article in allarticles['articles']:
-                    # print(collection.count_documents({}))
-                    if collection.find({'news.articles.title': article['title']}).limit(1).count() > 0:
-                        # print("it is there")
+    def retrieve_existing_title(self) -> dict:
+        """
+        Retrieve existing titles
+        """
+        existing_titles = {}
+        collections = [self.politicsCollection, self.techCollection, self.worldCollection,
+                       self.topBuzzCollection, self.entertainmentCollection, self.sportCollection]
+        for collection in collections:
+            cursor = list(collection.find({}))
+            if not cursor:
+                continue
+            category = cursor[0].get('category')
+            if category not in existing_titles:
+                existing_titles[category] = []
+            publishers = cursor[0].get('news')
+            for publisher in publishers:
+                articles = publisher.get('articles')
+                for article in articles:
+                    title = article.get('title')
+                    if title in existing_titles:
                         continue
-                    else:
-                        # print(article)
-                        collection.update({'category_id': item['category_id']}, {'$push': {'news.$[].articles': {'$each': [article], '$position': 0} }})
-        # if "videos" in item.keys():
-        #     collection.find_and_modify(query=query, update={"$set": {"videos": item["videos"]}})
+                    existing_titles[category].append(title)
+        return existing_titles
+
+    def update_data(self, collection, item):
+        publishers = item.get('news')
+        existing_titles: list = self.existing_titles.get(item.get('category'))
+        for publisher in publishers:
+            articles = publisher.get('articles')
+            for article in articles:
+                if article.get('title') in existing_titles:
+                    continue
+                query = {'category_id': item['category_id']}
+                operation = {'$push': {'news.$[].articles': {'$each': [article],
+                                                             '$position': 0}}}
+                collection.update_one(query, operation)
 
     def handle_collections(self, collection, item, item_name, category):
-        if category not in self.db.list_collection_names():
-            collection.insert(dict(item[item_name]))
+        if category not in db.list_collection_names():
+            collection.insert_one(dict(item[item_name]))
         else:
-            self.update_data(collection, item[item_name]) 
+            self.update_data(collection, item[item_name])
 
     def process_item(self, item, spider):
         if bool(item):

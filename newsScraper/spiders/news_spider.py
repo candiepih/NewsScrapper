@@ -1,3 +1,5 @@
+from typing import Generator, Any
+
 import scrapy
 from ..items import NewsscraperItem
 from .agregator.world import World
@@ -53,7 +55,7 @@ class BusinessspiderSpider(scrapy.Spider):
     news_containers = {}
     items: NewsscraperItem = NewsscraperItem()
 
-    def parse(self, response):
+    def parse(self, response) -> Generator[NewsscraperItem, Any, None]:
         if response.url in self.entertainment_urls:
             entertainment = Entertainment(response)
             self.news_containers["entertainmentNews"] = entertainment

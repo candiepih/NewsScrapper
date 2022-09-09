@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class Entertainment:
     __news = []
 
