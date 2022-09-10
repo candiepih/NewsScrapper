@@ -24,9 +24,10 @@ cache_time = (60 * 30)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('/', cache_page(cache_time)(views.News.as_view()), name="AllNews"),
+    path('', cache_page(cache_time)(views.News.as_view()), name="news"),
+    path('categories/', cache_page(cache_time)(views.News.as_view()), name="categories"),
     path('categories/<str:category>', cache_page(cache_time)(views.NewsCategory.as_view()),
-         name="NewsCategory"),
+         name="news_per_category"),
 ]
 
 handler404 = views.Error404.as_view()
