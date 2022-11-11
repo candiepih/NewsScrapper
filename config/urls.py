@@ -24,8 +24,8 @@ cache_time = (60 * 30)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', cache_page(cache_time)(views.News.as_view()), name="news"),
-    path('categories/', cache_page(cache_time)(views.Categories.as_view()), name="categories"),
+    path('', cache_page(cache_time)(views.News.as_view()), name="all_news"),
+    path('categories/', cache_page(cache_time)(views.Categories.as_view()), name="news_categories"),
     path('categories/<str:category>', cache_page(cache_time)(views.NewsCategory.as_view()),
          name="news_category"),
 ]
